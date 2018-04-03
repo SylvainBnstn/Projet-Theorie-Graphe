@@ -1,6 +1,6 @@
 # Projet-Theorie-Graphe
 
-##Propositions de réseaux
+## Propositions de réseaux
 
 [chaine alimentaire de la thundra](https://mignonviljoenthearcticwolf.weebly.com/ecosystem-food-web.html)
 (sachant que ça ne correspond pas exactement à l'image du site)
