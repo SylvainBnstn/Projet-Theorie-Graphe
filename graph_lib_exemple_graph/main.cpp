@@ -13,8 +13,8 @@ int main()
 
     /// Un exemple de graphe
     Graph g;
-    g.make_example();
-
+    //g.make_example();
+    g.load_graph(".txt");
 
     /// Vous gardez la main sur la "boucle de jeu"
     /// ( contrairement à des frameworks plus avancés )
@@ -28,7 +28,6 @@ int main()
     }
 
     grman::fermer_allegro();
-
     return 0;
 }
 END_OF_MAIN();
