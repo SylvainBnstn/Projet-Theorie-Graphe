@@ -308,6 +308,7 @@ class Graph
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+        void load_graph(std::string name);
 };
 
 

@@ -1,4 +1,6 @@
 #include "graph.h"
+#include <fstream>
+#include <iostream>
 
 /***************************************************
                     VERTEX
@@ -245,3 +247,28 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_edges[idx] = Edge(weight, ei);
 }
 
+void Graph::load_graph(std::string name)
+{
+    ///v1
+    std::ifstream fichier(name, std::ios::in);
+    if(fichier)
+    {
+        m_interface = std::make_shared<GraphInterface>(50,0,750,600);
+        int nb, idx, x, y, id_vert1, id_vert2;
+        double value, weight;
+        std::string pic_name;
+        fichier>>nb;
+        for(int i=0;i<nb;i++)
+        {
+            fichier>>idx>>value>>x>>y>>pic_name;
+            add_interfaced_vertex(idx, value, x, y,pic_name);
+        }
+        fichier>>nb;
+        for(int j=0;j<nb;j++)
+        {
+            fichier>>idx>>id_vert1>>id_vert2>>weight;
+            add_interfaced_edge(idx, id_vert1, id_vert2, weight);
+        }
+        fichier.close();
+    }
+}
