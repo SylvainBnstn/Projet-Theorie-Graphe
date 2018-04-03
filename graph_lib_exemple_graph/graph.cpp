@@ -164,27 +164,43 @@ void Graph::make_example()
 
     /// Les sommets doivent être définis avant les arcs
     // Ajouter le sommet d'indice 0 de valeur 30 en x=200 et y=100 avec l'image clown1.jpg etc...
-    add_interfaced_vertex(0, 30.0, 200, 100, "clown1.jpg");
-    add_interfaced_vertex(1, 60.0, 400, 100, "clown2.jpg");
-    add_interfaced_vertex(2,  50.0, 200, 300, "clown3.jpg");
-    add_interfaced_vertex(3,  0.0, 400, 300, "clown4.jpg");
-    add_interfaced_vertex(4,  100.0, 600, 300, "clown5.jpg");
-    add_interfaced_vertex(5,  0.0, 100, 500, "bad_clowns_xx3xx.jpg", 0);
-    add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
-    add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
+
+    add_interfaced_vertex(2, 30.0, 200, 100, "aigle.jpg");
+    add_interfaced_vertex(1,  0.0, 450, 100, "ours.jpg");
+    add_interfaced_vertex(3,  0.0, 700, 100, "loup.jpg");
+
+    add_interfaced_vertex(4, 60.0, 100, 250, "buffle.jpg");
+    add_interfaced_vertex(6,  50.0, 300, 250, "caribou.jpg");
+    add_interfaced_vertex(7,  0.0, 500, 250, "lapin.jpg");
+    add_interfaced_vertex(5, 0.0, 700, 250, "raton.jpg");
+
+    add_interfaced_vertex(10,  0.0, 200, 400, "fleur.jpg");
+    add_interfaced_vertex(9,  100.0, 450, 400, "herbe.jpg");
+    add_interfaced_vertex(8,  0.0, 700, 400, "lichen.jpg");
+
+    add_interfaced_vertex(11, 20.0, 450, 550, "soleil.png");
 
     /// Les arcs doivent être définis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
-    add_interfaced_edge(0, 1, 2, 50.0);
-    add_interfaced_edge(1, 0, 1, 50.0);
-    add_interfaced_edge(2, 1, 3, 75.0);
-    add_interfaced_edge(3, 4, 1, 25.0);
-    add_interfaced_edge(4, 6, 3, 25.0);
-    add_interfaced_edge(5, 7, 3, 25.0);
-    add_interfaced_edge(6, 3, 4, 0.0);
-    add_interfaced_edge(7, 2, 0, 100.0);
-    add_interfaced_edge(8, 5, 2, 20.0);
-    add_interfaced_edge(9, 3, 7, 80.0);
+    add_interfaced_edge(0, 6, 1, 50.0);
+    add_interfaced_edge(1, 7, 1, 50.0);
+    add_interfaced_edge(2, 5, 2, 75.0);
+    add_interfaced_edge(3, 7, 2, 25.0);
+    add_interfaced_edge(4, 5, 3, 25.0);
+    add_interfaced_edge(5, 6, 3, 25.0);
+    add_interfaced_edge(6, 7, 3, 0.0);
+
+    add_interfaced_edge(7, 9, 4, 100.0);
+    add_interfaced_edge(8, 8, 5, 20.0);
+    add_interfaced_edge(9, 9, 5, 80.0);
+    add_interfaced_edge(10, 10, 5, 25.0);
+    add_interfaced_edge(11, 10, 6, 0.0);
+    add_interfaced_edge(12, 9, 7, 100.0);
+    add_interfaced_edge(13, 10, 7, 20.0);
+
+    add_interfaced_edge(14, 11, 8, 80.0);
+    add_interfaced_edge(15, 11, 9, 80.0);
+    add_interfaced_edge(16, 11, 10, 80.0);
 }
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
