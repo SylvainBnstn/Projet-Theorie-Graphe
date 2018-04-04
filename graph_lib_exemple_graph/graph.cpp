@@ -245,6 +245,8 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
     m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2);
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
 }
 
 void Graph::load_graph(std::string name)
@@ -293,5 +295,28 @@ void Graph::save_graph(std::string name)
         {
             fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<std::endl;
         }
+        fichier.close();
+    }
+}
+void Graph::suppress_edge(int idx)
+{
+    if(m_edges.count(idx)!=0)
+    {
+        m_edges.erase(idx);
+    }
+}
+void Graph::suppress_vertex(int idx)
+{
+    if(m_vertices.count(idx)!=0)
+    {
+        for(std::vector<int>::iterator i=m_vertices[idx].m_in.begin();i!=m_vertices[idx].m_in.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        for(std::vector<int>::iterator i=m_vertices[idx].m_out.begin();i!=m_vertices[idx].m_out.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        m_vertices.erase(idx);
     }
 }

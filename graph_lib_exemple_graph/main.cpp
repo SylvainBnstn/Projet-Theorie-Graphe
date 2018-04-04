@@ -14,7 +14,7 @@ int main()
     /// Un exemple de graphe
     Graph g;
     //g.make_example();
-    g.load_graph(".txt");
+    g.load_graph("clown.txt");
 
     /// Vous gardez la main sur la "boucle de jeu"
     /// ( contrairement à des frameworks plus avancés )
@@ -26,7 +26,7 @@ int main()
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
-
+    g.save_graph("clown.txt");
     grman::fermer_allegro();
     return 0;
 }
