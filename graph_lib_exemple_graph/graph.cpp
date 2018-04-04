@@ -1,4 +1,6 @@
 #include "graph.h"
+#include <fstream>
+#include <iostream>
 
 /***************************************************
                     VERTEX
@@ -242,6 +244,79 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
-    m_edges[idx] = Edge(weight, ei);
+    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2);
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
 }
 
+void Graph::load_graph(std::string name)
+{
+    ///v1
+    std::ifstream fichier(name, std::ios::in);
+    if(fichier)
+    {
+        m_interface = std::make_shared<GraphInterface>(50,0,750,600);
+        int nb, idx, x, y, id_vert1, id_vert2;
+        double value, weight;
+        std::string pic_name;
+        fichier>>nb;
+        for(int i=0;i<nb;i++)
+        {
+            fichier>>idx>>value>>x>>y>>pic_name;
+            add_interfaced_vertex(idx, value, x, y,pic_name);
+        }
+        fichier>>nb;
+        for(int j=0;j<nb;j++)
+        {
+            fichier>>idx>>id_vert1>>id_vert2>>weight;
+            add_interfaced_edge(idx, id_vert1, id_vert2, weight);
+        }
+        fichier.close();
+    }
+}
+
+void Graph::save_graph(std::string name)
+{
+    std::ofstream fichier(name, std::ios::out | std::ios::trunc);
+    if(fichier)
+    {
+        int nb, idx, x, y, id_vert1, id_vert2;
+        double value, weight;
+        std::string pic_name;
+        nb=m_vertices.size();
+        fichier<<nb<<std::endl;
+        for(std::map<int,Vertex>::iterator i=m_vertices.begin();i!=m_vertices.end();i++)
+        {
+            fichier<<i->first<<" "<<i->second.m_value<<" "<<i->second.m_interface->m_top_box.get_posx()<<" "<<i->second.m_interface->m_top_box.get_posy()<<" "<<i->second.m_interface->m_img.get_pic_name()<<std::endl;
+        }
+        nb=m_edges.size();
+        fichier<<nb<<std::endl;
+        for(std::map<int,Edge>::iterator i=m_edges.begin();i!=m_edges.end();i++)
+        {
+            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<std::endl;
+        }
+        fichier.close();
+    }
+}
+void Graph::suppress_edge(int idx)
+{
+    if(m_edges.count(idx)!=0)
+    {
+        m_edges.erase(idx);
+    }
+}
+void Graph::suppress_vertex(int idx)
+{
+    if(m_vertices.count(idx)!=0)
+    {
+        for(std::vector<int>::iterator i=m_vertices[idx].m_in.begin();i!=m_vertices[idx].m_in.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        for(std::vector<int>::iterator i=m_vertices[idx].m_out.begin();i!=m_vertices[idx].m_out.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        m_vertices.erase(idx);
+    }
+}
