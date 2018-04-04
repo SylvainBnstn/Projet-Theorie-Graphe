@@ -1,4 +1,6 @@
 #include "graph.h"
+#include <fstream>
+#include <iostream>
 
 /***************************************************
                     VERTEX
@@ -164,44 +166,84 @@ void Graph::make_example()
 
     /// Les sommets doivent être définis avant les arcs
     // Ajouter le sommet d'indice 0 de valeur 30 en x=200 et y=100 avec l'image clown1.jpg etc...
-
-    add_interfaced_vertex(2, 30.0, 200, 100, "aigle.jpg");
-    add_interfaced_vertex(1,  0.0, 450, 100, "ours.jpg");
-    add_interfaced_vertex(3,  0.0, 700, 100, "loup.jpg");
-
-    add_interfaced_vertex(4, 60.0, 100, 250, "buffle.jpg");
-    add_interfaced_vertex(6,  50.0, 300, 250, "caribou.jpg");
-    add_interfaced_vertex(7,  0.0, 500, 250, "lapin.jpg");
-    add_interfaced_vertex(5, 0.0, 700, 250, "raton.jpg");
-
-    add_interfaced_vertex(10,  0.0, 200, 400, "fleur.jpg");
-    add_interfaced_vertex(9,  100.0, 450, 400, "herbe.jpg");
-    add_interfaced_vertex(8,  0.0, 700, 400, "lichen.jpg");
-
-    add_interfaced_vertex(11, 20.0, 450, 550, "soleil.png");
+    add_interfaced_vertex(0, 30.0, 200, 100, "clown1.jpg");
+    add_interfaced_vertex(1, 60.0, 400, 100, "clown2.jpg");
+    add_interfaced_vertex(2,  50.0, 200, 300, "clown3.jpg");
+    add_interfaced_vertex(3,  0.0, 400, 300, "clown4.jpg");
+    add_interfaced_vertex(4,  100.0, 600, 300, "clown5.jpg");
+    add_interfaced_vertex(5,  0.0, 100, 500, "bad_clowns_xx3xx.jpg", 0);
+    add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
+    add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
 
     /// Les arcs doivent être définis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
-    add_interfaced_edge(0, 6, 1, 50.0);
-    add_interfaced_edge(1, 7, 1, 50.0);
-    add_interfaced_edge(2, 5, 2, 75.0);
-    add_interfaced_edge(3, 7, 2, 25.0);
-    add_interfaced_edge(4, 5, 3, 25.0);
-    add_interfaced_edge(5, 6, 3, 25.0);
-    add_interfaced_edge(6, 7, 3, 0.0);
-
-    add_interfaced_edge(7, 9, 4, 100.0);
-    add_interfaced_edge(8, 8, 5, 20.0);
-    add_interfaced_edge(9, 9, 5, 80.0);
-    add_interfaced_edge(10, 10, 5, 25.0);
-    add_interfaced_edge(11, 10, 6, 0.0);
-    add_interfaced_edge(12, 9, 7, 100.0);
-    add_interfaced_edge(13, 10, 7, 20.0);
-
-    add_interfaced_edge(14, 11, 8, 80.0);
-    add_interfaced_edge(15, 11, 9, 80.0);
-    add_interfaced_edge(16, 11, 10, 80.0);
+    add_interfaced_edge(0, 1, 2, 50.0);
+    add_interfaced_edge(1, 0, 1, 50.0);
+    add_interfaced_edge(2, 1, 3, 75.0);
+    add_interfaced_edge(3, 4, 1, 25.0);
+    add_interfaced_edge(4, 6, 3, 25.0);
+    add_interfaced_edge(5, 7, 3, 25.0);
+    add_interfaced_edge(6, 3, 4, 0.0);
+    add_interfaced_edge(7, 2, 0, 100.0);
+    add_interfaced_edge(8, 5, 2, 20.0);
+    add_interfaced_edge(9, 3, 7, 80.0);
 }
+
+void Graph::menu()
+{
+    BITMAP *image_menu=NULL, *buff=NULL;
+    buff=create_bitmap(1024,768);
+    image_menu=load_bitmap("xp.bmp",NULL);
+    if(image_menu == NULL)
+    {
+        printf("Erreur de chargement xp.bmp");
+        exit(0);
+    }
+    while (choix_menu!=5)
+    {
+        choix_menu=0;
+        draw_sprite(buff,image_menu,0,0);
+        if ((mouse_b&1)&&(mouse_x>290)&&(mouse_y>440)&&(mouse_x<700)&&(mouse_y<495))
+        {
+            choix_menu=1;
+            boucle("thundra.txt");
+        }
+        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>555)&&(mouse_x<700)&&(mouse_y<610))
+        {
+            choix_menu=2;
+            boucle("mer.txt");
+        }
+        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>660)&&(mouse_x<700)&&(mouse_y<715))
+        {
+            choix_menu=3;
+        }
+        if((mouse_b&1)&&(mouse_x>930)&&(mouse_y>10)&&(mouse_x<1010)&&(mouse_y<95))
+        {
+            choix_menu=5;
+        }
+        draw_sprite(screen,buff,0,0);
+        rest(20);
+        clear_bitmap(buff);
+    }
+};
+
+void Graph::boucle(std::string name)
+{
+    load_graph(name);
+
+    /// Vous gardez la main sur la "boucle de jeu"
+    /// ( contrairement à des frameworks plus avancés )
+    while ( !key[KEY_ESC] )
+    {
+        /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
+        update();
+
+        /// Mise à jour générale (clavier/souris/buffer etc...)
+        grman::mettre_a_jour();
+    }
+    save_graph(name);
+};
+
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
@@ -258,6 +300,79 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
-    m_edges[idx] = Edge(weight, ei);
+    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2);
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
 }
 
+void Graph::load_graph(std::string name)
+{
+    ///v1
+    std::ifstream fichier(name, std::ios::in);
+    if(fichier)
+    {
+        m_interface = std::make_shared<GraphInterface>(50,0,750,600);
+        int nb, idx, x, y, id_vert1, id_vert2;
+        double value, weight;
+        std::string pic_name;
+        fichier>>nb;
+        for(int i=0;i<nb;i++)
+        {
+            fichier>>idx>>value>>x>>y>>pic_name;
+            add_interfaced_vertex(idx, value, x, y,pic_name);
+        }
+        fichier>>nb;
+        for(int j=0;j<nb;j++)
+        {
+            fichier>>idx>>id_vert1>>id_vert2>>weight;
+            add_interfaced_edge(idx, id_vert1, id_vert2, weight);
+        }
+        fichier.close();
+    }
+}
+
+void Graph::save_graph(std::string name)
+{
+    std::ofstream fichier(name, std::ios::out | std::ios::trunc);
+    if(fichier)
+    {
+        int nb, idx, x, y, id_vert1, id_vert2;
+        double value, weight;
+        std::string pic_name;
+        nb=m_vertices.size();
+        fichier<<nb<<std::endl;
+        for(std::map<int,Vertex>::iterator i=m_vertices.begin();i!=m_vertices.end();i++)
+        {
+            fichier<<i->first<<" "<<i->second.m_value<<" "<<i->second.m_interface->m_top_box.get_posx()<<" "<<i->second.m_interface->m_top_box.get_posy()<<" "<<i->second.m_interface->m_img.get_pic_name()<<std::endl;
+        }
+        nb=m_edges.size();
+        fichier<<nb<<std::endl;
+        for(std::map<int,Edge>::iterator i=m_edges.begin();i!=m_edges.end();i++)
+        {
+            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<std::endl;
+        }
+        fichier.close();
+    }
+}
+void Graph::suppress_edge(int idx)
+{
+    if(m_edges.count(idx)!=0)
+    {
+        m_edges.erase(idx);
+    }
+}
+void Graph::suppress_vertex(int idx)
+{
+    if(m_vertices.count(idx)!=0)
+    {
+        for(std::vector<int>::iterator i=m_vertices[idx].m_in.begin();i!=m_vertices[idx].m_in.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        for(std::vector<int>::iterator i=m_vertices[idx].m_out.begin();i!=m_vertices[idx].m_out.end();i++)
+        {
+            this->suppress_edge(*i);
+        }
+        m_vertices.erase(idx);
+    }
+}
