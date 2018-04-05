@@ -194,6 +194,60 @@ void Graph::make_example()
     add_interfaced_edge(9, 3, 7, 80.0);
 }
 
+void Graph::menu()
+{
+    BITMAP *image_menu=NULL, *buff=NULL;
+    buff=create_bitmap(1024,768);
+    image_menu=load_bitmap("xp.bmp",NULL);
+    if(image_menu == NULL)
+    {
+        printf("Erreur de chargement xp.bmp");
+        exit(0);
+    }
+    while (choix_menu!=5)
+    {
+        choix_menu=0;
+        draw_sprite(buff,image_menu,0,0);
+        if ((mouse_b&1)&&(mouse_x>290)&&(mouse_y>440)&&(mouse_x<700)&&(mouse_y<495))
+        {
+            choix_menu=1;
+            boucle("thundra.txt");
+        }
+        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>555)&&(mouse_x<700)&&(mouse_y<610))
+        {
+            choix_menu=2;
+            boucle("mer.txt");
+        }
+        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>660)&&(mouse_x<700)&&(mouse_y<715))
+        {
+            choix_menu=3;
+        }
+        if((mouse_b&1)&&(mouse_x>930)&&(mouse_y>10)&&(mouse_x<1010)&&(mouse_y<95))
+        {
+            choix_menu=5;
+        }
+        draw_sprite(screen,buff,0,0);
+        rest(20);
+        clear_bitmap(buff);
+    }
+};
+
+void Graph::boucle(std::string name)
+{
+    load_graph(name);
+
+    /// Vous gardez la main sur la "boucle de jeu"
+    /// ( contrairement à des frameworks plus avancés )
+    while ( !key[KEY_ESC] )
+    {
+        /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
+        update();
+
+        /// Mise à jour générale (clavier/souris/buffer etc...)
+        grman::mettre_a_jour();
+    }
+    save_graph(name);
+};
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {

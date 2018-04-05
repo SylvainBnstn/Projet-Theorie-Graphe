@@ -315,7 +315,10 @@ class Graph
         /// de chargement de fichiers par exemple.
         void make_example();
 
+        int choix_menu=0;
 
+        void menu();
+        void boucle(std::string name);
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void load_graph(std::string name);
