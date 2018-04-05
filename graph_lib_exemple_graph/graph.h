@@ -198,7 +198,7 @@ class EdgeInterface
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        EdgeInterface(Vertex& from, Vertex& to);
+        EdgeInterface(Vertex& from, Vertex& to, int color=1);
 };
 
 
@@ -222,13 +222,15 @@ class Edge
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<EdgeInterface> m_interface = nullptr;
 
+        ///indice de couleur
+        int m_color;
 
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
-        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0) :
-            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2)  {  };
+        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0, int color=1) :
+            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2),  m_color(color) {  };
 
         /// Edge étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Edge (pas directement la boucle de jeu)
@@ -263,6 +265,10 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        grman::WidgetButton m_add_sommet;
+        grman::WidgetText m_text_add_sommet;
+
+
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
 
@@ -296,7 +302,7 @@ class Graph
             m_interface(interface)  {  }
 
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
-        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0,int color=1);
         void suppress_edge(int idx);
         void suppress_vertex(int idx);
 

@@ -75,7 +75,7 @@ void Vertex::post_update()
 ****************************************************/
 
 /// Le constructeur met en place les éléments de l'interface
-EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
+EdgeInterface::EdgeInterface(Vertex& from, Vertex& to, int color)
 {
     // Le WidgetEdge de l'interface de l'arc
     if ( !(from.m_interface && to.m_interface) )
@@ -86,6 +86,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
     m_top_edge.attach_from(from.m_interface->m_top_box);
     m_top_edge.attach_to(to.m_interface->m_top_box);
     m_top_edge.reset_arrow_with_bullet();
+    m_top_edge.set_color(color);
 
     // Une boite pour englober les widgets de réglage associés
     m_top_edge.add_child(m_box_edge);
@@ -145,6 +146,14 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_tool_box.set_dim(80,720);
     m_tool_box.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
     m_tool_box.set_bg_color(BLANCBLEU);
+
+    m_tool_box.add_child(m_add_sommet);
+    m_add_sommet.set_dim(80,70);
+    m_add_sommet.set_gravity_xy(grman::GravityX::Center, grman::GravityY::Up);
+    m_add_sommet.add_child(m_text_add_sommet);
+    m_text_add_sommet.set_dim(80,35);
+    m_text_add_sommet.set_gravity_xy(grman::GravityX::Center, grman::GravityY::Center);
+    m_text_add_sommet.set_message("Ajouter \n un sommet");
 
     m_top_box.add_child(m_main_box);
     m_main_box.set_dim(908,720);
@@ -228,7 +237,7 @@ void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::stri
 }
 
 /// Aide à l'ajout d'arcs interfacés
-void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight)
+void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight, int color)
 {
     if ( m_edges.find(idx)!=m_edges.end() )
     {
@@ -242,9 +251,9 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
         throw "Error adding edge";
     }
 
-    EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
+    EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2], color);
     m_interface->m_main_box.add_child(ei->m_top_edge);
-    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2);
+    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2, color);
     m_vertices[id_vert1].m_out.push_back(idx);
     m_vertices[id_vert2].m_in.push_back(idx);
 }
@@ -256,7 +265,7 @@ void Graph::load_graph(std::string name)
     if(fichier)
     {
         m_interface = std::make_shared<GraphInterface>(50,0,750,600);
-        int nb, idx, x, y, id_vert1, id_vert2;
+        int nb, idx, x, y, id_vert1, id_vert2, color;
         double value, weight;
         std::string pic_name;
         fichier>>nb;
@@ -268,8 +277,8 @@ void Graph::load_graph(std::string name)
         fichier>>nb;
         for(int j=0;j<nb;j++)
         {
-            fichier>>idx>>id_vert1>>id_vert2>>weight;
-            add_interfaced_edge(idx, id_vert1, id_vert2, weight);
+            fichier>>idx>>id_vert1>>id_vert2>>weight>>color;
+            add_interfaced_edge(idx, id_vert1, id_vert2, weight, color);
         }
         fichier.close();
     }
@@ -280,7 +289,7 @@ void Graph::save_graph(std::string name)
     std::ofstream fichier(name, std::ios::out | std::ios::trunc);
     if(fichier)
     {
-        int nb, idx, x, y, id_vert1, id_vert2;
+        int nb, idx, x, y, id_vert1, id_vert2, color;
         double value, weight;
         std::string pic_name;
         nb=m_vertices.size();
@@ -293,7 +302,7 @@ void Graph::save_graph(std::string name)
         fichier<<nb<<std::endl;
         for(std::map<int,Edge>::iterator i=m_edges.begin();i!=m_edges.end();i++)
         {
-            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<std::endl;
+            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<" "<<i->second.m_color<<std::endl;
         }
         fichier.close();
     }
