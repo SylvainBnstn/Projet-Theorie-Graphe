@@ -359,11 +359,13 @@ class WidgetBox : public Widget
         // Position au moment du click quand on commence à bouger la WidgetBox
         Coords m_pos_start_move;
 
+        bool m_value=false;
 
     public :
 
         virtual void interact_focus();
         virtual bool captures_focus() { return true; }
+        virtual bool get_value() {return m_value;}
         void set_moveable(bool moveable=true) { m_moveable = moveable; }
 };
 

@@ -212,6 +212,13 @@ void GraphInterface::ajout_suppression()
     if(m_button_add_edge.get_value()==true)
     {
         std::cout<<"1"<<std::endl;
+        for(int i=0;i<m_vertices.size();i++)
+        {
+            if(m_vertices[i].get_value==true)
+            {
+                std::cout<<"vu";
+            }
+        }
         m_button_add_edge.set_value(false);
     }
     if(m_button_del_edge.get_value()==true)

@@ -311,6 +311,7 @@ void WidgetBox::interact_focus()
 
     if (m_moveable)
     {
+        m_value=true;
         m_frame.pos.x = m_pos_start_move.x + mouse_x-mouse_click_x;
         m_frame.pos.y = m_pos_start_move.y + mouse_y-mouse_click_y;
 

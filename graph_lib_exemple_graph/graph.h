@@ -119,6 +119,7 @@ class VertexInterface
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         VertexInterface(int idx, int x, int y, std::string pic_name="", int pic_idx=0);
+        bool get_value(){return m_top_box.get_value();};
 };
 
 
@@ -160,6 +161,7 @@ class Vertex
         /// le pre_update et post_update de Vertex (pas directement la boucle de jeu)
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
+        bool get_value(){return m_interface->get_value();};
         void post_update();
 };
 
