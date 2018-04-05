@@ -5,6 +5,7 @@
 
 int main()
 {
+    int xm,ym;
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
 
@@ -13,20 +14,9 @@ int main()
 
     /// Un exemple de graphe
     Graph g;
-    //g.make_example();
-    g.load_graph("thundra.txt");
 
-    /// Vous gardez la main sur la "boucle de jeu"
-    /// ( contrairement à des frameworks plus avancés )
-    while ( !key[KEY_ESC] )
-    {
-        /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
-        g.update();
+        g.menu();
 
-        /// Mise à jour générale (clavier/souris/buffer etc...)
-        grman::mettre_a_jour();
-    }
-    g.save_graph("thundra.txt");
     grman::fermer_allegro();
     return 0;
 }
