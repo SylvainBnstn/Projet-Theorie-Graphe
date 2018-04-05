@@ -272,6 +272,23 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        ///check box pour le graph reduit
+        grman::WidgetCheckBox m_check_box_1;
+
+        ///boite englobant les bouttons d'ajout et de suppression
+        grman::WidgetBox m_button_global;
+
+        ///bouttons ajout et supression edge et vertex
+        grman::WidgetButton m_button_add_edge;
+        grman::WidgetButton m_button_del_edge;
+        grman::WidgetButton m_button_add_vertex;
+        grman::WidgetButton m_button_reset;
+
+        grman::WidgetText m_txt_a_e;
+        grman::WidgetText m_txt_d_e;
+        grman::WidgetText m_txt_a_v;
+        grman::WidgetText m_txt_reset;
+
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
 
@@ -279,6 +296,7 @@ class GraphInterface
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
+        void ajout_suppression();
         GraphInterface(int x, int y, int w, int h);
 };
 

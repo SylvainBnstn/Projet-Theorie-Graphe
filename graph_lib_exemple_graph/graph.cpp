@@ -151,12 +151,92 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_tool_box.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
     m_tool_box.set_bg_color(BLANCBLEU);
 
+    ///check box pour le graph reduit
+
+    m_tool_box.add_child(m_check_box_1);
+    m_check_box_1.set_value(true);
+    m_check_box_1.set_dim(20,20);
+    m_check_box_1.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
+    m_check_box_1.set_bg_color(BLANCROSE);
+
+    ///boite englobant les bouttons d'ajout et de suppression
+
+    m_tool_box.add_child(m_button_global);
+    m_button_global.set_dim(76,76);
+    m_button_global.set_gravity_y(grman::GravityY::Down);
+    m_button_global.set_bg_color(BLANCROSE);
+
+    ///bouton ajout edge en haut a gauche de la boite
+
+    m_button_global.add_child(m_button_add_edge);
+    m_button_add_edge.set_dim(31,31);
+    m_button_add_edge.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
+    m_button_add_edge.set_bg_color(VERTCLAIR);
+
+    m_button_add_edge.add_child(m_txt_a_e);
+    m_txt_a_e.set_message("A-E");
+
+    ///boutton suppression edge en haut a droite de la boite
+
+    m_button_global.add_child(m_button_del_edge);
+    m_button_del_edge.set_dim(31,31);
+    m_button_del_edge.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
+    m_button_del_edge.set_bg_color(ROUGECLAIR);
+
+    m_button_del_edge.add_child(m_txt_d_e);
+    m_txt_d_e.set_message("D-E");
+
+    ///bouton ajout vertex en bas a gauche de la boite
+
+    m_button_global.add_child(m_button_add_vertex);
+    m_button_add_vertex.set_dim(31,31);
+    m_button_add_vertex.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Down);
+    m_button_add_vertex.set_bg_color(VERT);
+
+    m_button_add_vertex.add_child(m_txt_a_v);
+    m_txt_a_v.set_message("A-V");
+
+    ///bouton ajout vertex en bas a gauche de la boite
+
+    m_button_global.add_child(m_button_reset);
+    m_button_reset.set_dim(31,31);
+    m_button_reset.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Down);
+    m_button_reset.set_bg_color(ROUGE);
+
+    m_button_reset.add_child(m_txt_reset);
+    m_txt_reset.set_message("Res");
+
     m_top_box.add_child(m_main_box);
     m_main_box.set_dim(908,720);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
 }
 
+
+
+void GraphInterface::ajout_suppression()
+{
+    if(m_button_add_edge.get_value()==true)
+    {
+        std::cout<<"1"<<std::endl;
+        m_button_add_edge.set_value(false);
+    }
+    if(m_button_del_edge.get_value()==true)
+    {
+        std::cout<<"2"<<std::endl;
+        m_button_del_edge.set_value(false);
+    }
+    if(m_button_add_vertex.get_value() ==true)
+    {
+        std::cout<<"3"<<std::endl;
+        m_button_add_vertex.set_value(false);
+    }
+        if(m_button_reset.get_value() ==true)
+    {
+        std::cout<<"4"<<std::endl;
+        m_button_reset.set_value(false);
+    }
+}
 
 /// Méthode spéciale qui construit un graphe arbitraire (démo)
 /// Cette méthode est à enlever et remplacer par un système
@@ -242,7 +322,7 @@ void Graph::boucle(std::string name)
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
         update();
-
+	m_interface->ajout_suppression();
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
