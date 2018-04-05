@@ -1,23 +1,23 @@
 19
-1 0 -1 613 soleil.png
-2 0 708 439 phytoplancton.jpg
-3 0 771 354 protozoaire.jpg
-4 0 -1 414 macroalgue.jpg
-5 0 -1 268 zooplancton.png
-6 0 429 294 krill.jpg
-7 0 564 126 etoile.jpg
-8 0 249 381 coquillage.jpg
-9 0 413 593 crabe.png
-10 0 179 -1 rorqual.jpg
-11 0 609 12 baleine_bleue.jpg
-12 0 246 144 calamar.jpg
-13 0 368 92 pieuvre.jpg
-14 0 435 -1 thon.jpg
-15 0 566 115 albatros.jpg
-16 0 771 -1 pingouin.jpg
-17 0 736 32 phoque.jpg
-18 0 109 -1 leopard.png
-19 0 277 -1 orque.jpg
+1 0 -3 611 soleil.png
+2 0 706 437 phytoplancton.jpg
+3 0 769 352 protozoaire.jpg
+4 0 -3 412 macroalgue.jpg
+5 0 -3 266 zooplancton.png
+6 0 427 292 krill.jpg
+7 0 562 124 etoile.jpg
+8 0 247 379 coquillage.jpg
+9 0 411 591 crabe.png
+10 0 177 -3 rorqual.jpg
+11 0 607 10 baleine_bleue.jpg
+12 0 244 142 calamar.jpg
+13 0 366 90 pieuvre.jpg
+14 0 433 -3 thon.jpg
+15 0 564 113 albatros.jpg
+16 0 769 -3 pingouin.jpg
+17 0 734 30 phoque.jpg
+18 0 107 -3 leopard.png
+19 0 275 -3 orque.jpg
 44
 1 1 2 0
 2 1 3 0
