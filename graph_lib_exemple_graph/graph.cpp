@@ -41,6 +41,10 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
 
     m_box_label_idx.add_child( m_label_idx );
     m_label_idx.set_message( std::to_string(idx) );
+
+    m_top_box.add_child( m_suppress);
+    m_suppress.set_dim(10,10);
+    m_suppress.set_gravity_xy(grman::GravityX::Right,grman::GravityY::Up);
 }
 
 
@@ -55,6 +59,7 @@ void Vertex::pre_update()
 
     /// Copier la valeur locale de la donnée m_value vers le label sous le slider
     m_interface->m_label_value.set_message( std::to_string( (int)m_value) );
+    m_to_delete=m_interface->m_suppress.get_value();
 }
 
 
@@ -75,7 +80,7 @@ void Vertex::post_update()
 ****************************************************/
 
 /// Le constructeur met en place les éléments de l'interface
-EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
+EdgeInterface::EdgeInterface(Vertex& from, Vertex& to, int color)
 {
     // Le WidgetEdge de l'interface de l'arc
     if ( !(from.m_interface && to.m_interface) )
@@ -86,7 +91,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
     m_top_edge.attach_from(from.m_interface->m_top_box);
     m_top_edge.attach_to(to.m_interface->m_top_box);
     m_top_edge.reset_arrow_with_bullet();
-
+    m_top_edge.set_color(color);
     // Une boite pour englober les widgets de réglage associés
     m_top_edge.add_child(m_box_edge);
     m_box_edge.set_dim(24,60);
@@ -189,62 +194,6 @@ void Graph::make_example()
     add_interfaced_edge(9, 3, 7, 80.0);
 }
 
-void Graph::menu()
-{
-    BITMAP *image_menu=NULL, *buff=NULL;
-    buff=create_bitmap(1024,768);
-    image_menu=load_bitmap("xp.bmp",NULL);
-    if(image_menu == NULL)
-    {
-        printf("Erreur de chargement xp.bmp");
-        exit(0);
-    }
-    while (choix_menu!=5)
-    {
-        choix_menu=0;
-        draw_sprite(buff,image_menu,0,0);
-        if ((mouse_b&1)&&(mouse_x>290)&&(mouse_y>440)&&(mouse_x<700)&&(mouse_y<495))
-        {
-            choix_menu=1;
-            boucle("thundra.txt");
-        }
-        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>555)&&(mouse_x<700)&&(mouse_y<610))
-        {
-            choix_menu=2;
-            boucle("mer.txt");
-        }
-        if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>660)&&(mouse_x<700)&&(mouse_y<715))
-        {
-            choix_menu=3;
-        }
-        if((mouse_b&1)&&(mouse_x>930)&&(mouse_y>10)&&(mouse_x<1010)&&(mouse_y<95))
-        {
-            choix_menu=5;
-        }
-        draw_sprite(screen,buff,0,0);
-        rest(20);
-        clear_bitmap(buff);
-    }
-};
-
-void Graph::boucle(std::string name)
-{
-    load_graph(name);
-
-    /// Vous gardez la main sur la "boucle de jeu"
-    /// ( contrairement à des frameworks plus avancés )
-    while ( !key[KEY_ESC] )
-    {
-        /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
-        update();
-
-        /// Mise à jour générale (clavier/souris/buffer etc...)
-        grman::mettre_a_jour();
-    }
-    save_graph(name);
-};
-
-
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
@@ -252,16 +201,24 @@ void Graph::update()
         return;
 
     for (auto &elt : m_vertices)
-        elt.second.pre_update();
+        {
+            elt.second.pre_update();
+            if(elt.second.m_to_delete==true)
+            {
+                this->suppress_vertex(elt.first);
+                return;
+            }
+        }
 
     for (auto &elt : m_edges)
+    {
         elt.second.pre_update();
-
+    }
     m_interface->m_top_box.update();
 
     for (auto &elt : m_vertices)
-        elt.second.post_update();
-
+        {elt.second.post_update();
+        }
     for (auto &elt : m_edges)
         elt.second.post_update();
 
@@ -284,7 +241,7 @@ void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::stri
 }
 
 /// Aide à l'ajout d'arcs interfacés
-void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight)
+void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight, int color)
 {
     if ( m_edges.find(idx)!=m_edges.end() )
     {
@@ -298,9 +255,9 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
         throw "Error adding edge";
     }
 
-    EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
+    EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2], color);
     m_interface->m_main_box.add_child(ei->m_top_edge);
-    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2);
+    m_edges[idx] = Edge(weight, ei, id_vert1, id_vert2, color);
     m_vertices[id_vert1].m_out.push_back(idx);
     m_vertices[id_vert2].m_in.push_back(idx);
 }
@@ -312,7 +269,7 @@ void Graph::load_graph(std::string name)
     if(fichier)
     {
         m_interface = std::make_shared<GraphInterface>(50,0,750,600);
-        int nb, idx, x, y, id_vert1, id_vert2;
+        int nb, idx, x, y, id_vert1, id_vert2, color;
         double value, weight;
         std::string pic_name;
         fichier>>nb;
@@ -324,8 +281,8 @@ void Graph::load_graph(std::string name)
         fichier>>nb;
         for(int j=0;j<nb;j++)
         {
-            fichier>>idx>>id_vert1>>id_vert2>>weight;
-            add_interfaced_edge(idx, id_vert1, id_vert2, weight);
+            fichier>>idx>>id_vert1>>id_vert2>>weight>>color;
+            add_interfaced_edge(idx, id_vert1, id_vert2, weight, color);
         }
         fichier.close();
     }
@@ -336,7 +293,7 @@ void Graph::save_graph(std::string name)
     std::ofstream fichier(name, std::ios::out | std::ios::trunc);
     if(fichier)
     {
-        int nb, idx, x, y, id_vert1, id_vert2;
+        int nb, idx, x, y, id_vert1, id_vert2, color;
         double value, weight;
         std::string pic_name;
         nb=m_vertices.size();
@@ -349,30 +306,70 @@ void Graph::save_graph(std::string name)
         fichier<<nb<<std::endl;
         for(std::map<int,Edge>::iterator i=m_edges.begin();i!=m_edges.end();i++)
         {
-            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<std::endl;
+            fichier<<i->first<<" "<<i->second.m_from<<" "<<i->second.m_to<<" "<<i->second.m_weight<<" "<<i->second.m_color<<std::endl;
         }
         fichier.close();
     }
 }
 void Graph::suppress_edge(int idx)
+
 {
-    if(m_edges.count(idx)!=0)
+    Edge &remed=m_edges.at(idx);
+    if (remed.m_interface)
+
     {
-        m_edges.erase(idx);
+        m_interface->m_main_box.remove_child( remed.m_interface->m_top_edge );
     }
+
+    std::vector<int> &vefrom = m_vertices[remed.m_from].m_out;
+
+    std::vector<int> &veto = m_vertices[remed.m_to].m_in;
+
+    vefrom.erase( std::remove( vefrom.begin(), vefrom.end(), idx ), vefrom.end() );
+
+    veto.erase( std::remove( veto.begin(), veto.end(), idx ), veto.end() );
+
+    m_edges.erase( idx );
+
 }
 void Graph::suppress_vertex(int idx)
 {
-    if(m_vertices.count(idx)!=0)
+    std::vector<int> temp;
+     //pointe sur le edge
+        for(std::map<int, Edge>::iterator it=m_edges.begin(); it!=m_edges.end(); it++)
+        {
+            if (it->second.m_from==idx||it->second.m_to==idx)
+            {
+                temp.push_back(it->first);
+            }
+        }
+        for(auto elem : temp)
+        {
+            suppress_edge(elem);
+        }
+        if(m_interface && m_vertices[idx].m_interface)
+        {
+            m_interface->m_main_box.remove_child(m_vertices[idx].m_interface->m_top_box);
+        }
+        m_vertices.erase(idx);
+}
+    /*if(m_vertices.count(idx)!=0)
     {
         for(std::vector<int>::iterator i=m_vertices[idx].m_in.begin();i!=m_vertices[idx].m_in.end();i++)
         {
+            std::cout<<*i<<std::endl;
+            system("pause");
             this->suppress_edge(*i);
         }
         for(std::vector<int>::iterator i=m_vertices[idx].m_out.begin();i!=m_vertices[idx].m_out.end();i++)
         {
+            std::cout<<*i<<std::endl;
+            system("pause");
             this->suppress_edge(*i);
         }
+        if(m_interface && m_vertices[idx].m_interface)
+        {
+            m_interface->m_main_box.remove_child(m_vertices[idx].m_interface->m_top_box);
+        }
         m_vertices.erase(idx);
-    }
-}
+    }*/

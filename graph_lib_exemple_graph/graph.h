@@ -114,6 +114,11 @@ class VertexInterface
         // Une boite pour le label précédent
         grman::WidgetText m_box_label_idx;
 
+        //bouton pour supprimer un sommet
+        grman::WidgetButton m_suppress;
+
+        grman::WidgetText m_text_add;
+
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -141,6 +146,8 @@ class Vertex
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_value;
 
+        ///indication de suppression
+        bool m_to_delete;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<VertexInterface> m_interface = nullptr;
 
@@ -198,7 +205,7 @@ class EdgeInterface
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        EdgeInterface(Vertex& from, Vertex& to);
+        EdgeInterface(Vertex& from, Vertex& to, int color=1);
 };
 
 
@@ -219,6 +226,8 @@ class Edge
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_weight;
 
+        ///indice de couleur
+        int m_color;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<EdgeInterface> m_interface = nullptr;
 
@@ -227,8 +236,8 @@ class Edge
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
-        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0) :
-            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2)  {  };
+        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0, int color=1) :
+            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2), m_color(color)  {  };
 
         /// Edge étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Edge (pas directement la boucle de jeu)
@@ -296,7 +305,7 @@ class Graph
             m_interface(interface)  {  }
 
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
-        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0, int color=1);
         void suppress_edge(int idx);
         void suppress_vertex(int idx);
 
@@ -306,10 +315,6 @@ class Graph
         /// de chargement de fichiers par exemple.
         void make_example();
 
-        int choix_menu=0;
-
-        void menu();
-        void boucle(std::string name);
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
