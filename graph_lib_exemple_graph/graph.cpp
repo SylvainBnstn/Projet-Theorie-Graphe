@@ -207,6 +207,29 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_main_box.set_bg_color(BLANCJAUNE);
 }
 
+void GraphInterface::ajout_suppression()
+{
+    if(m_button_add_edge.get_value()==true)
+    {
+        std::cout<<"1"<<std::endl;
+        m_button_add_edge.set_value(false);
+    }
+    if(m_button_del_edge.get_value()==true)
+    {
+        std::cout<<"2"<<std::endl;
+        m_button_del_edge.set_value(false);
+    }
+    if(m_button_add_vertex.get_value() ==true)
+    {
+        std::cout<<"3"<<std::endl;
+        m_button_add_vertex.set_value(false);
+    }
+    if(m_button_del_vertex.get_value()==true)
+    {
+        std::cout<<"4"<<std::endl;
+        m_button_del_vertex.set_value(false);
+    }
+}
 
 /// Méthode spéciale qui construit un graphe arbitraire (démo)
 /// Cette méthode est à enlever et remplacer par un système
@@ -292,7 +315,7 @@ void Graph::boucle(std::string name)
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
         update();
-
+        m_interface->ajout_suppression();
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }

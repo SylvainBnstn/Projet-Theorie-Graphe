@@ -287,6 +287,7 @@ class GraphInterface
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
+        void ajout_suppression();
         GraphInterface(int x, int y, int w, int h);
 };
 
