@@ -1,15 +1,15 @@
 11
-1 64.2857 -10 49 ours.jpg
-2 0 518 609 aigle.jpg
-3 0 206 -17 loup.jpg
-4 60 749 591 buffle.jpg
-5 0 716 186 raton.jpg
-6 50 -17 399 caribou.jpg
-7 0 255 246 lapin.jpg
-8 0 692 447 lichen.jpg
-9 100 668 -1 herbe.jpg
-10 0 145 531 fleur.jpg
-11 20 358 581 soleil.png
+1 64.2857 31 106 ours.jpg
+2 0 514 605 aigle.jpg
+3 0 359 47 loup.jpg
+4 60 745 587 buffle.jpg
+5 0 712 182 raton.jpg
+6 50 1 347 caribou.jpg
+7 0 371 235 lapin.jpg
+8 0 688 443 lichen.jpg
+9 100 664 -5 herbe.jpg
+10 0 141 527 fleur.jpg
+11 20 354 577 soleil.png
 17
 0 6 1 50
 1 7 1 50
