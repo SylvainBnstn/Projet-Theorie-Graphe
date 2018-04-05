@@ -15,7 +15,7 @@ int main()
     /// Un exemple de graphe
     Graph g;
 
-        g.menu();
+    g.menu();
 
     grman::fermer_allegro();
     return 0;

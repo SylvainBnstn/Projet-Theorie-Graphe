@@ -146,6 +146,12 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_tool_box.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
     m_tool_box.set_bg_color(BLANCBLEU);
 
+    m_tool_box.add_child(m_check_box_1);
+    m_check_box_1.set_value(true);
+    m_check_box_1.set_dim(20,20);
+    m_check_box_1.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
+    m_check_box_1.set_bg_color(BLANCROSE);
+
     m_top_box.add_child(m_main_box);
     m_main_box.set_dim(908,720);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
