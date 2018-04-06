@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1522959333 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.cpp
+1523009762 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.cpp
 	"graph.h"
 	<fstream>
 	<iostream>
 
-1522959436 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.h
+1523008777 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.h
 	<vector>
 	<map>
 	<string>
@@ -52,63 +52,6 @@
 	"widget.h"
 
 1522959718 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\main.cpp
-	"grman/grman.h"
-	<iostream>
-	"graph.h"
-
-1522961928 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\graph.cpp
-	"graph.h"
-	<fstream>
-	<iostream>
-
-1522961955 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\graph.h
-	<vector>
-	<map>
-	<string>
-	<memory>
-	"grman/grman.h"
-
-1522961254 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman.h
-	<allegro.h>
-	<string>
-	"grman_couleurs.h"
-	"coords.h"
-	"widget.h"
-
-1522961254 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman_couleurs.h
-
-1522961254 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\coords.h
-	<cmath>
-
-1522961254 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\widget.h
-	"grman.h"
-	<iostream>
-	<string>
-	<vector>
-	<algorithm>
-	<allegro.h>
-
-1522961254 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\coords.cpp
-	"coords.h"
-
-1522961254 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman.cpp
-	<cmath>
-	<unordered_map>
-	<unordered_set>
-	<utility>
-	<string>
-	<iostream>
-	<regex>
-	"grman.h"
-	<allegro.h>
-	<png.h>
-	<loadpng.h>
-	<jpgalleg.h>
-
-1522961254 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\widget.cpp
-	"widget.h"
-
-1522961254 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\main.cpp
 	"grman/grman.h"
 	<iostream>
 	"graph.h"
