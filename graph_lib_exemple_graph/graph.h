@@ -288,15 +288,11 @@ class GraphInterface
         grman::WidgetText m_txt_d_e;
         grman::WidgetText m_txt_a_v;
         grman::WidgetText m_txt_reset;
-
-        // A compléter éventuellement par des widgets de décoration ou
-        // d'édition (boutons ajouter/enlever ...)
-
     public :
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        void ajout_suppression();
+        int ajout_suppression();
         GraphInterface(int x, int y, int w, int h);
 };
 
@@ -314,6 +310,7 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        std::string m_name="";
 
     public:
 
@@ -323,6 +320,7 @@ class Graph
             m_interface(interface)  {  }
 
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
+        void user_add_vertex();
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0, int color=1);
         void suppress_edge(int idx);
         void suppress_vertex(int idx);
@@ -336,11 +334,13 @@ class Graph
         int choix_menu=0;
 
         void menu();
-        void boucle(std::string name);
+        void boucle();
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void load_graph(std::string name);
         void save_graph(std::string name);
+        void unload_graph();
+        void load_backup_graph();
 };
 
 

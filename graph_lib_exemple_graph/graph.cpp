@@ -211,31 +211,33 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
 }
-
-
-
-void GraphInterface::ajout_suppression()
+int GraphInterface::ajout_suppression()
 {
     if(m_button_add_edge.get_value()==true)
     {
         std::cout<<"1"<<std::endl;
         m_button_add_edge.set_value(false);
+        return(1);
     }
     if(m_button_del_edge.get_value()==true)
     {
         std::cout<<"2"<<std::endl;
         m_button_del_edge.set_value(false);
+        return(2);
     }
     if(m_button_add_vertex.get_value() ==true)
     {
         std::cout<<"3"<<std::endl;
         m_button_add_vertex.set_value(false);
+        return(3);
     }
         if(m_button_reset.get_value() ==true)
     {
         std::cout<<"4"<<std::endl;
         m_button_reset.set_value(false);
+        return(4);
     }
+    return(0);
 }
 
 /// Méthode spéciale qui construit un graphe arbitraire (démo)
@@ -291,12 +293,14 @@ void Graph::menu()
         if ((mouse_b&1)&&(mouse_x>290)&&(mouse_y>440)&&(mouse_x<700)&&(mouse_y<495))
         {
             choix_menu=1;
-            boucle("thundra.txt");
+            m_name="thundra";
+            boucle();
         }
         if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>555)&&(mouse_x<700)&&(mouse_y<610))
         {
             choix_menu=2;
-            boucle("mer.txt");
+            m_name="mer";
+            boucle();
         }
         if((mouse_b&1)&&(mouse_x>290)&&(mouse_y>660)&&(mouse_x<700)&&(mouse_y<715))
         {
@@ -312,8 +316,9 @@ void Graph::menu()
     }
 };
 
-void Graph::boucle(std::string name)
+void Graph::boucle()
 {
+    std::string name=m_name+".txt";
     load_graph(name);
 
     /// Vous gardez la main sur la "boucle de jeu"
@@ -322,18 +327,21 @@ void Graph::boucle(std::string name)
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
         update();
-	m_interface->ajout_suppression();
+
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
     save_graph(name);
+    unload_graph();
 };
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
     if (!m_interface)
         return;
-
+    int button=m_interface->ajout_suppression();
+    if(button==3)   user_add_vertex();
+    if(button==4)   load_backup_graph();
     for (auto &elt : m_vertices)
         {
             elt.second.pre_update();
@@ -373,7 +381,15 @@ void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::stri
     // On peut ajouter directement des vertices dans la map avec la notation crochet :
     m_vertices[idx] = Vertex(value, vi);
 }
-
+void Graph::user_add_vertex()
+{
+    std::cout<<"Entrez le nom du sommet que vous voulez créer (nom de l'image)"<<std::endl;
+    std::string name;
+    std::cin>>name;
+    int key=m_vertices.rbegin()->first;
+    key++;
+    add_interfaced_vertex(key, 0.0, 50, 50, name);
+}
 /// Aide à l'ajout d'arcs interfacés
 void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight, int color)
 {
@@ -487,23 +503,21 @@ void Graph::suppress_vertex(int idx)
         }
         m_vertices.erase(idx);
 }
-    /*if(m_vertices.count(idx)!=0)
+void Graph::unload_graph()
+{
+    std::vector<int> temp_vertex;
+    for(std::map<int,Vertex>::iterator i=m_vertices.begin();i!=m_vertices.end();i++)
     {
-        for(std::vector<int>::iterator i=m_vertices[idx].m_in.begin();i!=m_vertices[idx].m_in.end();i++)
-        {
-            std::cout<<*i<<std::endl;
-            system("pause");
-            this->suppress_edge(*i);
-        }
-        for(std::vector<int>::iterator i=m_vertices[idx].m_out.begin();i!=m_vertices[idx].m_out.end();i++)
-        {
-            std::cout<<*i<<std::endl;
-            system("pause");
-            this->suppress_edge(*i);
-        }
-        if(m_interface && m_vertices[idx].m_interface)
-        {
-            m_interface->m_main_box.remove_child(m_vertices[idx].m_interface->m_top_box);
-        }
-        m_vertices.erase(idx);
-    }*/
+        temp_vertex.push_back(i->first);
+    }
+    for(auto elem : temp_vertex)
+    {
+        suppress_vertex(elem);
+    }
+}
+void Graph::load_backup_graph()
+{
+    std::string name=m_name+"_backup.txt";
+    unload_graph();
+    load_graph(name);
+}
