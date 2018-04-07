@@ -571,13 +571,10 @@ void Graph::temporalite()
                 for (auto elem : it->second.m_out)
                 {
                     it->second.m_coef= (it->second.m_coef + (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_to].m_value))/1000;
-                    std::cout << "coef en cours de calcul: " << (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_to].m_value) << std::endl;
                 }
-                std::cout << it->first << ": coef: " << it->second.m_coef << std::endl;
 
                 it->second.m_value=(it->second.m_value+((it->second.m_r)*(it->second.m_value)*(1-((it->second.m_value)/(it->second.m_K))))-it->second.m_coef);
 
-                std::cout << "n:" << it->second.m_value << std::endl;
                 if (it->second.m_interface->m_img.get_pic_name()=="soleil.png"){it->second.m_value=100;}
                 if (it->second.m_value<0){it->second.m_value=0;}
                 if (it->second.m_value>100){it->second.m_value=100;}
