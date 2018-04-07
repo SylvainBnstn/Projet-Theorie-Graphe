@@ -359,13 +359,11 @@ class WidgetBox : public Widget
         // Position au moment du click quand on commence à bouger la WidgetBox
         Coords m_pos_start_move;
 
-        bool m_value=false;
 
     public :
 
         virtual void interact_focus();
         virtual bool captures_focus() { return true; }
-        virtual bool get_value() {return m_value;}
         void set_moveable(bool moveable=true) { m_moveable = moveable; }
 };
 
@@ -445,6 +443,8 @@ class WidgetEdge : public Widget
 
         void set_children_position(double rel_pos) { m_children_position = rel_pos; }
         void set_children_lateral(double abs_lat) { m_children_lateral = abs_lat; }
+        void set_color(int color){if(color==1)  m_color=ROUGE;
+        else    m_color=BLEU;}
 };
 
 

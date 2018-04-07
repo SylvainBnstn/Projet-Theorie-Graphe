@@ -114,12 +114,14 @@ class VertexInterface
         // Une boite pour le label précédent
         grman::WidgetText m_box_label_idx;
 
+        //bouton pour supprimer un sommet
+        grman::WidgetButton m_suppress;
+
     public :
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         VertexInterface(int idx, int x, int y, std::string pic_name="", int pic_idx=0);
-        bool get_value(){return m_top_box.get_value();};
 };
 
 
@@ -142,6 +144,8 @@ class Vertex
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_value;
 
+        ///indication de suppression
+        bool m_to_delete;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<VertexInterface> m_interface = nullptr;
 
@@ -157,11 +161,12 @@ class Vertex
         Vertex (double value=0, VertexInterface *interface=nullptr) :
             m_value(value), m_interface(interface)  {  }
 
+        float m_K;
+
         /// Vertex étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Vertex (pas directement la boucle de jeu)
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
-        bool get_value(){return m_interface->get_value();};
         void post_update();
 };
 
@@ -196,11 +201,12 @@ class EdgeInterface
         // Un label de visualisation du poids de l'arc
         grman::WidgetText m_label_weight;
 
+        grman::WidgetButton m_suppress;
     public :
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        EdgeInterface(Vertex& from, Vertex& to);
+        EdgeInterface(Vertex& from, Vertex& to, int color=1);
 };
 
 
@@ -221,6 +227,10 @@ class Edge
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_weight;
 
+        ///indication de suppression
+        bool m_to_delete;
+        ///indice de couleur
+        int m_color;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<EdgeInterface> m_interface = nullptr;
 
@@ -229,8 +239,8 @@ class Edge
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
-        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0) :
-            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2)  {  };
+        Edge (double weight=0, EdgeInterface *interface=nullptr, int id_vert1=0, int id_vert2=0, int color=1) :
+            m_weight(weight), m_interface(interface), m_from(id_vert1), m_to(id_vert2), m_color(color)  {  };
 
         /// Edge étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Edge (pas directement la boucle de jeu)
@@ -273,23 +283,18 @@ class GraphInterface
 
         ///bouttons ajout et supression edge et vertex
         grman::WidgetButton m_button_add_edge;
-        grman::WidgetButton m_button_del_edge;
         grman::WidgetButton m_button_add_vertex;
-        grman::WidgetButton m_button_del_vertex;
+        grman::WidgetButton m_button_reset;
 
         grman::WidgetText m_txt_a_e;
         grman::WidgetText m_txt_d_e;
         grman::WidgetText m_txt_a_v;
-        grman::WidgetText m_txt_d_v;
-
-        // A compléter éventuellement par des widgets de décoration ou
-        // d'édition (boutons ajouter/enlever ...)
-
+        grman::WidgetText m_txt_reset;
     public :
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        void ajout_suppression();
+        int ajout_suppression();
         GraphInterface(int x, int y, int w, int h);
 };
 
@@ -307,6 +312,7 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        std::string m_name="";
 
     public:
 
@@ -316,8 +322,11 @@ class Graph
             m_interface(interface)  {  }
 
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
-        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        void user_add_vertex();
+        void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0, int color=1);
+        void user_add_edge();
         void suppress_edge(int idx);
+        void user_suppress_edge();
         void suppress_vertex(int idx);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
@@ -329,12 +338,15 @@ class Graph
         int choix_menu=0;
 
         void menu();
-        void boucle(std::string name);
+        void boucle();
 
+        void Temporalite();
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void load_graph(std::string name);
         void save_graph(std::string name);
+        void unload_graph();
+        void load_backup_graph();
 };
 
 
