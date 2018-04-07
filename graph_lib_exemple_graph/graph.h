@@ -117,8 +117,6 @@ class VertexInterface
         //bouton pour supprimer un sommet
         grman::WidgetButton m_suppress;
 
-        grman::WidgetText m_text_add;
-
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -140,7 +138,7 @@ class Vertex
         /// liste des indices des arcs arrivant au sommet : accès aux prédécesseurs
         std::vector<int> m_in;
 
-        /// liste des indices des arcs partant du sommet : accès aux successeurs
+        /// liste des indices des arcs partant du sommet : accès aux successeursit->second.m_K=0;
         std::vector<int> m_out;
 
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
@@ -162,6 +160,10 @@ class Vertex
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
         Vertex (double value=0, VertexInterface *interface=nullptr) :
             m_value(value), m_interface(interface)  {  }
+
+        float m_K;
+        float m_coef;
+        float m_r=0.001;
 
         /// Vertex étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Vertex (pas directement la boucle de jeu)
@@ -201,6 +203,7 @@ class EdgeInterface
         // Un label de visualisation du poids de l'arc
         grman::WidgetText m_label_weight;
 
+        grman::WidgetButton m_suppress;
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -226,6 +229,8 @@ class Edge
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_weight;
 
+        ///indication de suppression
+        bool m_to_delete;
         ///indice de couleur
         int m_color;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
@@ -278,9 +283,8 @@ class GraphInterface
         ///boite englobant les bouttons d'ajout et de suppression
         grman::WidgetBox m_button_global;
 
-        ///bouttons ajout et supression edge et vertex
+        ///boutons ajout et supression edge et vertex
         grman::WidgetButton m_button_add_edge;
-        grman::WidgetButton m_button_del_edge;
         grman::WidgetButton m_button_add_vertex;
         grman::WidgetButton m_button_reset;
 
@@ -288,6 +292,13 @@ class GraphInterface
         grman::WidgetText m_txt_d_e;
         grman::WidgetText m_txt_a_v;
         grman::WidgetText m_txt_reset;
+
+        ///bouton de temporalité
+
+        grman::WidgetBox m_box_temp;
+        grman::WidgetCheckBox m_check_temp;
+        grman::WidgetText m_txt_temp;
+
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -322,7 +333,9 @@ class Graph
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
         void user_add_vertex();
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0, int color=1);
+        void user_add_edge();
         void suppress_edge(int idx);
+        void user_suppress_edge();
         void suppress_vertex(int idx);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
@@ -335,6 +348,8 @@ class Graph
 
         void menu();
         void boucle();
+
+        void temporalite();
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void load_graph(std::string name);

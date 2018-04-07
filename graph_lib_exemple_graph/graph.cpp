@@ -43,7 +43,7 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
     m_label_idx.set_message( std::to_string(idx) );
 
     m_top_box.add_child( m_suppress);
-    m_suppress.set_dim(10,10);
+    m_suppress.set_dim(16,16);
     m_suppress.set_gravity_xy(grman::GravityX::Right,grman::GravityY::Up);
 }
 
@@ -94,7 +94,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to, int color)
     m_top_edge.set_color(color);
     // Une boite pour englober les widgets de réglage associés
     m_top_edge.add_child(m_box_edge);
-    m_box_edge.set_dim(24,60);
+    m_box_edge.set_dim(24,70);
     m_box_edge.set_bg_color(BLANCBLEU);
 
     // Le slider de réglage de valeur
@@ -105,8 +105,13 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to, int color)
 
     // Label de visualisation de valeur
     m_box_edge.add_child( m_label_weight );
-    m_label_weight.set_gravity_y(grman::GravityY::Down);
+    m_label_weight.set_posy(48);
 
+
+    ///bouton de suppression
+    m_box_edge.add_child( m_suppress);
+    m_suppress.set_dim(10,10);
+    m_suppress.set_gravity_xy(grman::GravityX::Center,grman::GravityY::Down);
 }
 
 
@@ -121,6 +126,7 @@ void Edge::pre_update()
 
     /// Copier la valeur locale de la donnée m_weight vers le label sous le slider
     m_interface->m_label_weight.set_message( std::to_string( (int)m_weight ) );
+    m_to_delete=m_interface->m_suppress.get_value();
 }
 
 /// Gestion du Edge après l'appel à l'interface
@@ -176,16 +182,6 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_button_add_edge.add_child(m_txt_a_e);
     m_txt_a_e.set_message("A-E");
 
-    ///boutton suppression edge en haut a droite de la boite
-
-    m_button_global.add_child(m_button_del_edge);
-    m_button_del_edge.set_dim(31,31);
-    m_button_del_edge.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
-    m_button_del_edge.set_bg_color(ROUGECLAIR);
-
-    m_button_del_edge.add_child(m_txt_d_e);
-    m_txt_d_e.set_message("D-E");
-
     ///bouton ajout vertex en bas a gauche de la boite
 
     m_button_global.add_child(m_button_add_vertex);
@@ -210,30 +206,39 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_main_box.set_dim(908,720);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
+
+    ///bouton temporalite
+
+    m_tool_box.add_child(m_box_temp);
+    m_box_temp.set_dim(74,38);
+    m_box_temp.set_gravity_x(grman::GravityX::Left);
+    m_box_temp.set_bg_color(BLANCROSE);
+
+    m_box_temp.add_child(m_check_temp);
+    m_check_temp.set_dim(22,22);
+    m_check_temp.set_gravity_y(grman::GravityY::Up);
+    m_check_temp.set_bg_color(BLANCBLEU);
+
+    m_box_temp.add_child(m_txt_temp);
+    m_txt_temp.set_gravity_y(grman::GravityY::Down);
+    m_txt_temp.set_message("Simulate");
+
+
 }
 int GraphInterface::ajout_suppression()
 {
     if(m_button_add_edge.get_value()==true)
     {
-        std::cout<<"1"<<std::endl;
         m_button_add_edge.set_value(false);
         return(1);
     }
-    if(m_button_del_edge.get_value()==true)
-    {
-        std::cout<<"2"<<std::endl;
-        m_button_del_edge.set_value(false);
-        return(2);
-    }
     if(m_button_add_vertex.get_value() ==true)
     {
-        std::cout<<"3"<<std::endl;
         m_button_add_vertex.set_value(false);
         return(3);
     }
         if(m_button_reset.get_value() ==true)
     {
-        std::cout<<"4"<<std::endl;
         m_button_reset.set_value(false);
         return(4);
     }
@@ -327,7 +332,7 @@ void Graph::boucle()
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
         update();
-
+        temporalite();
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
@@ -340,6 +345,8 @@ void Graph::update()
     if (!m_interface)
         return;
     int button=m_interface->ajout_suppression();
+    if(button==1)   user_add_edge();
+    if(button==2)   user_suppress_edge();
     if(button==3)   user_add_vertex();
     if(button==4)   load_backup_graph();
     for (auto &elt : m_vertices)
@@ -355,6 +362,11 @@ void Graph::update()
     for (auto &elt : m_edges)
     {
         elt.second.pre_update();
+        if(elt.second.m_to_delete==true)
+            {
+                this->suppress_edge(elt.first);
+                return;
+            }
     }
     m_interface->m_top_box.update();
 
@@ -411,7 +423,18 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_vertices[id_vert1].m_out.push_back(idx);
     m_vertices[id_vert2].m_in.push_back(idx);
 }
+void Graph::user_add_edge()
+{
+    std::cout<<"Entrez l'id du sommet de depart"<<std::endl;
+    int id_out, id_in;
+    std::cin>>id_out;
+    std::cout<<"Entrez l'id du sommet d'arrivé"<<std::endl;
+    std::cin>>id_in;
+    int key=m_edges.rbegin()->first;
+    key++;
+    add_interfaced_edge(key, id_out, id_in);
 
+}
 void Graph::load_graph(std::string name)
 {
     ///v1
@@ -482,6 +505,11 @@ void Graph::suppress_edge(int idx)
     m_edges.erase( idx );
 
 }
+void Graph::user_suppress_edge()
+{
+    std::cout<<"Cliquez sur le sommet de depart"<<std::endl;
+
+}
 void Graph::suppress_vertex(int idx)
 {
     std::vector<int> temp;
@@ -520,4 +548,42 @@ void Graph::load_backup_graph()
     std::string name=m_name+"_backup.txt";
     unload_graph();
     load_graph(name);
+}
+
+void Graph::temporalite()
+{
+    if (m_interface->m_check_temp.get_value()==true)
+    {
+        ///calcul des K
+        for (std::map<int, Vertex>::iterator it= m_vertices.begin(); it!= m_vertices.end(); it++)
+            {
+                it->second.m_K=0.001;
+                for (auto elem : it->second.m_in)
+                {
+                    it->second.m_K= it->second.m_K + (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_from].m_value);
+                }
+            }
+
+        ///calcul des n
+        for (std::map<int, Vertex>::iterator it= m_vertices.begin(); it!= m_vertices.end(); it++)
+            {
+                it->second.m_coef=0;
+                for (auto elem : it->second.m_out)
+                {
+                    it->second.m_coef= (it->second.m_coef + (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_to].m_value))/1000;
+                    std::cout << "coef en cours de calcul: " << (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_to].m_value) << std::endl;
+                }
+                std::cout << it->first << ": coef: " << it->second.m_coef << std::endl;
+
+                it->second.m_value=(it->second.m_value+((it->second.m_r)*(it->second.m_value)*(1-((it->second.m_value)/(it->second.m_K))))-it->second.m_coef);
+
+                std::cout << "n:" << it->second.m_value << std::endl;
+                if (it->second.m_interface->m_img.get_pic_name()=="soleil.png"){it->second.m_value=100;}
+                if (it->second.m_value<0){it->second.m_value=0;}
+                if (it->second.m_value>100){it->second.m_value=100;}
+
+            }
+    }
+
+
 }
