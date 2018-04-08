@@ -7,7 +7,7 @@
 #include <string>
 
 /*!
-*\file grman\grman.cpp
+*\file grman\grman.h
 *\brief Fichier regroupant les fonctions utile a l'affichage graphique via allegro
 *\author Robin Fercoq
 */

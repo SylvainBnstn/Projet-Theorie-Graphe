@@ -76,6 +76,18 @@
 
 #include "grman/grman.h"
 
+/*!
+*\file graph.h
+*\brief Le fichier qui gere toutes les fonctions du projet.
+*Nous tenons à rappler que la base du code que vous allez lire a ete realise par Robin FERCOQ
+*Et que durant cette semaine de projet "piscine", nous nous le sommes approprie afin de l'exploiter le mieux possible
+*Pour remplir le cahier des charges demande
+*
+*\date 08/04/2018
+*\author Sylvain BENISTAND, Jonathan BOUTAKHOT, Jean Prouvost, sur un code de base fournit par Robin FERCOQ.
+*
+*/
+
 /***************************************************
                     VERTEX
 ****************************************************/

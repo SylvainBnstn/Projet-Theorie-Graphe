@@ -11,7 +11,7 @@
 #include <allegro.h>
 
 /*!
-*\file grman\widget.cpp
+*\file grman\widget.h
 *\brief Fichier regroupant les fonctions de gestion des outils interactif graphique via l'affichage graphique d'allegro
 *\author Robin Fercoq
 */
