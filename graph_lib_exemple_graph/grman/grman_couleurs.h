@@ -1,11 +1,20 @@
 #ifndef COULEURS_H_INCLUDED
 #define COULEURS_H_INCLUDED
 
+/*!
+*\file grman\grman_couleurs.h
+*\brief Fichier regroupant les define utile a l'affichage graphique via allegro
+*\author Robin Fercoq
+*/
+
+/*!
+*\namespace grman
+*\brief espace regroupant les define utile a l'affichage graphique via allegro
+*\author Robin Fercoq
+*/
+
 namespace grman
 {
-
-/// Les couleurs proposées. Il est possible d'en ajouter en respectant la syntaxe.
-/// Faire une recherche "couleur html" dans google image pour d'autres valeurs.
 
 #define NOIR 0x000000
 
@@ -70,19 +79,16 @@ namespace grman
 #define SABLECLAIR 0xF5DEB3
 #define SABLESOMBRE 0xDEB887
 
-
-/// !!! Systeme : ne pas intervenir sur le code ci dessous !!!
-
-// Masques binaires de spécification de type de remplissage
+//! Masques binaires de specification de type de remplissage
 #define CONTOUR 0X10000000
 
-// Masque binaire de spécification de dessin torique
+//! Masque binaire de specification de dessin torique
 #define TORIQUE 0x40000000
 
-// Masque binaire de spécification de bitmap destination (sur page ou sur fond)
+//! Masque binaire de specification de bitmap destination (sur page ou sur fond)
 #define PEINDRE 0x01000000
 
-// Macro de facilitation de determination bitmap destination du dessin :
+//! Macro de facilitation de determination bitmap destination du dessin :
 #define DESTBMP()                   \
     BITMAP *bmp=NULL;               \
     do {                            \
@@ -92,7 +98,7 @@ namespace grman
         else bmp=page;              \
     } while(0)
 
-// Macro de facilitation de determination dessin multiple torique :
+//! Macro de facilitation de determination dessin multiple torique :
 #define TORIQUE_DEBUT           \
     int torx,tory,rep=0;        \
     if ( couleur&TORIQUE ) {    \
@@ -105,13 +111,12 @@ namespace grman
 #define TORIQUE_FIN  }         \
 
 
-/// Couleur spéciale : rend "invisible"
+//! Couleur speciale : rend "invisible"
 #define EFFACER (0xFF00FF|PEINDRE)
 
-/// Couleur à tester pour recupCouleurFond ( -> pas de peinture dessous)
 #define FOND 0xFF00FF
 
-/// Couleurs aleatoires
+//! Couleurs aleatoires
 #define COULEURALEATOIRE makecol(rand()&0xFF, rand()&0xFF, rand()&0xFF)
 #define COULEURALEATOIRESOMBRE makecol(rand()&0x7F, rand()&0x7F, rand()&0x7F)
 #define COULEURALEATOIRECLAIR makecol((rand()&0x7F)+0x80, (rand()&0x7F)+0x80, (rand()&0x7F)+0x80)
