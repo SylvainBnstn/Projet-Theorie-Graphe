@@ -1,7 +1,7 @@
 #include "graph.h"
 #include <fstream>
 #include <iostream>
-
+#include <queue>
 /***************************************************
                     VERTEX
 ****************************************************/
@@ -182,6 +182,13 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_button_add_edge.add_child(m_txt_a_e);
     m_txt_a_e.set_message("A-E");
 
+    ///bouton k_connexité
+    m_button_global.add_child(m_button_k_connex);
+    m_button_k_connex.set_dim(31,31);
+    m_button_k_connex.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
+    m_button_k_connex.set_bg_color(FUCHSIA);
+    m_button_k_connex.add_child(m_txt_k_connexe);
+    m_txt_k_connexe.set_message("K-CO");
     ///bouton ajout vertex en bas a gauche de la boite
 
     m_button_global.add_child(m_button_add_vertex);
@@ -213,6 +220,11 @@ int GraphInterface::ajout_suppression()
     {
         m_button_add_edge.set_value(false);
         return(1);
+    }
+    if(m_button_k_connex.get_value()==true)
+    {
+        m_button_k_connex.set_value(false);
+        return(2);
     }
     if(m_button_add_vertex.get_value() ==true)
     {
@@ -314,7 +326,7 @@ void Graph::boucle()
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
         update();
-        Temporalite();
+
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
@@ -328,7 +340,7 @@ void Graph::update()
         return;
     int button=m_interface->ajout_suppression();
     if(button==1)   user_add_edge();
-    if(button==2)   user_suppress_edge();
+    if(button==2)   initialisation_k_connexite();
     if(button==3)   user_add_vertex();
     if(button==4)   load_backup_graph();
     for (auto &elt : m_vertices)
@@ -487,11 +499,6 @@ void Graph::suppress_edge(int idx)
     m_edges.erase( idx );
 
 }
-void Graph::user_suppress_edge()
-{
-    std::cout<<"Cliquez sur le sommet de depart"<<std::endl;
-
-}
 void Graph::suppress_vertex(int idx)
 {
     std::vector<int> temp;
@@ -532,76 +539,391 @@ void Graph::load_backup_graph()
     load_graph(name);
 }
 
-/*void Graph::calcul_population(int idx)
+/*void Graph::initialisation_k_connexite()
 {
-    /*
-    for (std::map<int, Edge>::iterator it= m_edges.begin(); it!= m_edges.end(); it++)
+    int ind;
+    bool besoin=true;
+    int adjacent=0;
+    std::vector<std::vector <int>> combinaison;
+    std::vector<int> inter;
+    for(auto& elem : m_vertices)
     {
-        if (idx==it->second.m_to&&m_vertices[it->second.m_to].m_value!=0)
+        adjacent=elem.second.m_out.size()+elem.second.m_in.size();
+        if(adjacent==0)
         {
-            m_vertices[idx].m_value+=m_vertices[idx]+ m_vertices[idx].m_value*(1-( m_vertices[idx].m_value/ m_vertices[idx]))-it->second.m_weight*(m_vertices[it->second.m_from].m_value);
-            if(m_vertices[idx].m_value<0)
-            {
-                m_vertices[idx].m_value=0;
-            }
-            if(m_vertices[idx].m_value>100)
-            {
-                m_vertices[idx].m_value=100;
-            }
+            besoin=false;
         }
-        else
+    }
+    if(besoin==false)
+    {
+        std::cout<<"le graphe est deja non connexe"<<std::endl;
+    }
+    else
+    {
+        for(auto elem : m_vertices)
         {
-            if (idx==it->second.m_to)
-            {
-                m_vertices[idx].m_value-=it->second.m_weight*(m_vertices[it->second.m_from].m_value);
-                if(m_vertices[idx].m_value<0)
+            ind=elem.first;
+            elem.second.m_existe=true;
+        }
+        ind++;
+        tdb=0;
+        tdb_max=5000;
+        k_connexite(inter,combinaison);
+        std::vector<std::vector <int>> combinaison_min;
+        std::vector<std::vector <int>> combinaison_min1;
+        std::vector<std::vector <int>> utilise;
+        int indice=0;
+        bool valide;
+        int p_min=1000000;
+        for(int i=0; i<combinaison.size(); i++)
+        {
+            if(combinaison[i].size()<p_min)
                 {
-                    m_vertices[idx].m_value=0;
+                    p_min=combinaison[i].size();
+                }
+        }
+        for(int i=0; i<combinaison.size();i++)
+        {
+            if(combinaison[i].size()==p_min)
+            {
+                combinaison_min.push_back(combinaison[i]);
+            }
+    }
+    for(int i=0;i<combinaison.size();i++)
+    {
+        inter=combinaison_min[i];
+        indice=0;
+        valide=true;
+        for(int j=0;j<utilise.size();j++)
+        {
+            for(int k=0;k<utilise[i].size();i++)
+            {
+                for(int l=0;l<inter.size();l++)
+                {
+                    if(inter[l]==utilise[j][k])
+                    {
+                        indice++;
+                    }
+                    if(indice==p_min)
+                    {
+                        valide=false;
+                    }
                 }
             }
         }
+        if(valide)
+        {
+            combinaison_min1.push_back(inter);
+            utilise.push_back(inter);
+        }
+    }
+    std::cout<<"Le graphe devient non connexe en supprimant les sommets suivants"<<std::endl;
+    for(int i=0;i<combinaison_min1.size();i++)
+    {
+        if(combinaison_min1.size()!=0)
+        {
+            std::cout<<"- ";
+            for(int j=0;j<combinaison_min1[i].size();j++)
+            {
+                std::cout<<combinaison_min1[i][j]<<" ";
+            }
+            std::cout<<std::endl;
+        }
+
     }
 
-}*/
+    }
+}
 
-void Graph::Temporalite()
+void Graph::k_connexite(std::vector<int>& intermediaire, std::vector<std::vector <int>>& combinaison)
 {
-    ///calcul des K
-
-        ///ajouter attribut k
-        for (std::map<int, Vertex>::iterator it= m_vertices.begin(); it!= m_vertices.end(); it++)
+    bool valide;
+    for(auto& elem : m_vertices)
+    {
+        if(elem.second.m_existe)
+        {
+            elem.second.m_existe=false;
+            if(graph_connexite(elem.first)==true)
             {
-                it->second.m_K=0;
-                for (auto elem : it->second.m_in)
+                intermediaire.push_back(elem.first);
+                tdb++;
+                if(tdb<tdb_max)
                 {
-                    it->second.m_K= it->second.m_K + (m_edges[elem].m_weight*m_vertices[m_edges[elem].m_to].m_value);
+                    k_connexite(intermediaire,combinaison);
                 }
-                std::cout << it->second.m_K << std::endl;
+                intermediaire.pop_back();
+            }
+            else
+            {
+                tdb++;
+                valide=true;
+                for(int i=0; i<combinaison.size(); i++)
+                {
+                    if(combinaison[i]==intermediaire)
+                    {
+                        valide=false;
+                    }
+                }
+                if(valide)
+                    combinaison.push_back(intermediaire);
+                if(tdb<tdb_max)
+                {
+                    tdb_max=tdb;
+                }
+            }
+            tdb--;
+            elem.second.m_existe=true;
+
+        }
+    }
+}
+
+bool Graph::graph_connexite(int idx)
+{
+
+    int intermediaire;
+    int ind=0;
+    int ind1=0;
+    std::queue<int> file_bfs;
+    for(auto& elem : m_vertices)
+    {
+        elem.second.m_marqueur=false;
+    }
+    m_vertices[idx].m_marqueur=true;
+    file_bfs.push(idx);
+    while(file_bfs.size()!=0)
+    {
+        intermediaire=file_bfs.front();
+        file_bfs.pop();
+        for(int i=0; i<m_vertices[intermediaire].m_in.size(); i++)
+        {
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_in[i]].m_from);
+                m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur=true;
             }
 
-            ///le k sera egale au poids des edge in * les n des sommets en questions.
-
-    ///calcul des n
-
-        ///ajouter attribut r
-
-            ///utilisé la formule
-
-
-    /*
-    for (std::map<int, Vertex>::iterator it= m_vertices.begin(); it!= m_vertices.end(); it++)
-    {
-        if (it->second.m_interface->m_img.get_pic_name()=="voiture.bmp"||it->second.m_interface->m_img.get_pic_name()=="herbe.bmp")
-        {
-            it->second.m_value=1;
         }
-        else
+        for(int i=0; i<m_vertices[intermediaire].m_out.size(); i++)
         {
-            calcul_K(it->first);
-            calcul_Npop(it->first);
-            std::cout<<it->second.m_interface->m_img.get_pic_name() << " " <<it->second.m_value<< std::endl;
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_out[i]].m_to);
+                m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur=true;
+            }
         }
-
     }
+    for(auto& elem : m_vertices)
+    {
+        if(elem.second.m_existe==true)
+        {
+            ind++;
+        }
+        if(elem.second.m_marqueur==true)
+        {
+            ind1++;
+        }
+    }
+    if(ind>ind1)
+    {
+        return false;
+    }
+    if(ind==ind1)
+    {
+        return true;
+    }
+
+}
 */
+void Graph::initialisation_k_connexite()
+{
+    bool necessite=true;
+    int nb_sommets_adj=0;
+    std::vector<std::vector <int>> combinaisons;
+    std::vector<int> intermediaire;
+    for(auto& element:m_vertices)
+    {
+
+        nb_sommets_adj=element.second.m_out.size()+element.second.m_in.size();
+        if(nb_sommets_adj==0)
+        {
+            necessite=false;
+        }
+    }
+    if(necessite==false)
+    {
+        std::cout<<"le graphe est deja non connexe"<<std::endl;
+    }
+    else if(necessite==true)
+    {
+        for(auto &element:m_vertices)
+        {
+            element.second.m_existe=true;
+        }
+        m_tdb=0;
+        m_tdb_max=6666;
+        k_connexe(intermediaire,combinaisons);
+        int poids_minimum=1000000;
+    std::vector<std::vector <int>> combinaisons_min;
+    std::vector<std::vector <int>> combinaisons_min1;
+    std::vector<std::vector <int>> utilises;
+    int indice=0;
+    bool bon;
+    for(int i=0; i<combinaisons.size(); i++)
+    {
+        if(combinaisons[i].size()<poids_minimum)
+        {
+            poids_minimum=combinaisons[i].size();
+        }
+    }
+    for(int i=0; i<combinaisons.size();i++)
+    {
+        if(combinaisons[i].size()==poids_minimum)
+        {
+            combinaisons_min.push_back(combinaisons[i]);
+        }
+    }
+    for(int i=0;i<combinaisons_min.size();i++)
+    {
+        intermediaire=combinaisons_min[i];
+        indice=0;
+        bon=true;
+        for(int j=0;j<utilises.size();j++)
+        {
+            for(int k=0;k<utilises[i].size();i++)
+            {
+                for(int l=0;l<utilises.size();l++)
+                {
+                    if(intermediaire[l]==utilises[j][k])
+                    {
+                        indice++;
+                    }
+                    if(indice==poids_minimum)
+                    {
+                        bon=false;
+                    }
+                }
+            }
+        }
+        if(bon==true)
+        {
+            combinaisons_min1.push_back(intermediaire);
+            utilises.push_back(intermediaire);
+        }
+    }
+    std::cout<<"Le graphe devient non connexe en supprimant les sommets suivants"<<std::endl;
+    for(int i=0;i<combinaisons_min1.size();i++)
+    {
+        if(combinaisons_min1.size()!=0)
+        {
+            std::cout<<"- ";
+            for(int j=0;j<combinaisons_min1[i].size();j++)
+            {
+                std::cout<<combinaisons_min1[i][j]<<" ";
+            }
+            std::cout<<std::endl;
+        }
+
+    }
+
+    }
+}
+
+void Graph::k_connexe(std::vector<int>& intermediaire, std::vector<std::vector <int>>& combinaisons)
+{
+    bool bon;
+    for(auto & element:m_vertices)
+    {
+        if(element.second.m_existe)
+        {
+            element.second.m_existe=false;
+            if(graph_connexite(element.first)==true)
+            {
+                intermediaire.push_back(element.first);
+                m_tdb++;
+                if(m_tdb<m_tdb_max)
+                {
+                    k_connexe(intermediaire,combinaisons);
+                }
+                intermediaire.pop_back();
+            }
+            else if(graph_connexite(element.first)==false)
+            {
+                m_tdb++;
+                bon=true;
+                for(int i=0; i<combinaisons.size(); i++)
+                {
+                    if(combinaisons[i]==intermediaire)
+                    {
+                        bon=false;
+                    }
+                }
+                if(bon==true)
+                    combinaisons.push_back(intermediaire);
+                if(m_tdb<m_tdb_max)
+                {
+                    m_tdb_max=m_tdb;
+                }
+            }
+            m_tdb--;
+            element.second.m_existe=true;
+        }
+    }
+}
+
+bool Graph::graph_connexite(int idx)
+{
+
+    int intermediaire;
+    int indice=0;
+    int indice1=0;
+    std::queue<int> file_bfs;
+    for(auto & element:m_vertices)
+    {
+        element.second.m_marqueur=false;
+    }
+    m_vertices[idx].m_marqueur=true;
+    file_bfs.push(idx);
+    while(file_bfs.size()!=0)
+    {
+        intermediaire=file_bfs.front();
+        file_bfs.pop();
+        for(int i=0; i<m_vertices[intermediaire].m_in.size(); i++)
+        {
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_in[i]].m_from);
+                m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur=true;
+            }
+
+        }
+        for(int i=0; i<m_vertices[intermediaire].m_out.size(); i++)
+        {
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_out[i]].m_to);
+                m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur=true;
+            }
+        }
+    }
+    for(auto& element:m_vertices)
+    {
+        if(element.second.m_existe)
+        {
+            indice++;
+        }
+        if(element.second.m_marqueur)
+        {
+            indice1++;
+        }
+    }
+    if(indice>indice1)
+    {
+        return false;
+    }
+    else if(indice==indice1)
+    {
+        return true;
+    }
+
 }

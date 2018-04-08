@@ -146,6 +146,12 @@ class Vertex
 
         ///indication de suppression
         bool m_to_delete;
+
+        ///indice de la partie connexe forte
+        int m_forte_connexite;
+
+        bool m_existe;
+        bool m_marqueur;
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<VertexInterface> m_interface = nullptr;
 
@@ -160,8 +166,6 @@ class Vertex
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
         Vertex (double value=0, VertexInterface *interface=nullptr) :
             m_value(value), m_interface(interface)  {  }
-
-        float m_K;
 
         /// Vertex étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Vertex (pas directement la boucle de jeu)
@@ -285,11 +289,13 @@ class GraphInterface
         grman::WidgetButton m_button_add_edge;
         grman::WidgetButton m_button_add_vertex;
         grman::WidgetButton m_button_reset;
+        grman::WidgetButton m_button_k_connex;
 
         grman::WidgetText m_txt_a_e;
         grman::WidgetText m_txt_d_e;
         grman::WidgetText m_txt_a_v;
         grman::WidgetText m_txt_reset;
+        grman::WidgetText m_txt_k_connexe;
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -309,11 +315,14 @@ class Graph
         /// La liste des sommets
         std::map<int, Vertex> m_vertices;
 
+        int** m_adj;
+
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
         std::string m_name="";
-
+        int m_tdb_max;
+        int m_tdb;
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
@@ -339,14 +348,16 @@ class Graph
 
         void menu();
         void boucle();
-
-        void Temporalite();
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void load_graph(std::string name);
         void save_graph(std::string name);
         void unload_graph();
         void load_backup_graph();
+        void toutesLesComposantesFortementConnexes();
+        void k_connexe(std::vector<int>& intermediaire, std::vector<std::vector <int>>& combinaison);
+        bool graph_connexite(int idx);
+        void initialisation_k_connexite();
 };
 
 
