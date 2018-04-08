@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1522856785 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.cpp
+1523028214 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.cpp
 	"graph.h"
 	<fstream>
 	<iostream>
 
-1522857237 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.h
+1523029298 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\graph.h
 	<vector>
 	<map>
 	<string>
@@ -23,7 +23,7 @@
 1522575424 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\grman\coords.h
 	<cmath>
 
-1522840212 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\grman\widget.h
+1522958250 c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\grman\widget.h
 	"grman.h"
 	<iostream>
 	<string>
@@ -51,36 +51,36 @@
 1522636919 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\grman\widget.cpp
 	"widget.h"
 
-1522855400 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\main.cpp
+1522959718 source:c:\users\jean\desktop\projet info théorie des graphes\graph_lib_exemple_graph\main.cpp
 	"grman/grman.h"
 	<iostream>
 	"graph.h"
 
-1522872780 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\graph.cpp
+1523120612 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph.cpp
 	"graph.h"
 	<fstream>
 	<iostream>
 
-1522870970 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\graph.h
+1523119267 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph.h
 	<vector>
 	<map>
 	<string>
 	<memory>
 	"grman/grman.h"
 
-1522862437 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman.h
+1523117223 c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\grman.h
 	<allegro.h>
 	<string>
 	"grman_couleurs.h"
 	"coords.h"
 	"widget.h"
 
-1522862437 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman_couleurs.h
+1523117223 c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\grman_couleurs.h
 
-1522862437 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\coords.h
+1523117223 c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\coords.h
 	<cmath>
 
-1522862437 c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\widget.h
+1523117223 c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\widget.h
 	"grman.h"
 	<iostream>
 	<string>
@@ -88,10 +88,10 @@
 	<algorithm>
 	<allegro.h>
 
-1522862437 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\coords.cpp
+1523117223 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\coords.cpp
 	"coords.h"
 
-1522862437 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\grman.cpp
+1523117223 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\grman.cpp
 	<cmath>
 	<unordered_map>
 	<unordered_set>
@@ -105,39 +105,41 @@
 	<loadpng.h>
 	<jpgalleg.h>
 
-1522862437 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\grman\widget.cpp
+1523117223 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\grman\widget.cpp
 	"widget.h"
 
-1522871152 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\graph_lib_exemple_graph\main.cpp
+1523117223 source:c:\users\sylvain\desktop\projet-theorie-graphe-master\main.cpp
 	"grman/grman.h"
 	<iostream>
 	"graph.h"
 
-1522941522 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\graph.cpp
+1523216455 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.cpp
 	"graph.h"
 	<fstream>
 	<iostream>
 
-1522947043 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\graph.h
+1523225661 c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.h
 	<vector>
 	<map>
 	<string>
 	<memory>
+	<list>
+	<stack>
 	"grman/grman.h"
 
-1522928007 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\grman.h
+1523212027 c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\grman.h
 	<allegro.h>
 	<string>
 	"grman_couleurs.h"
 	"coords.h"
 	"widget.h"
 
-1522928007 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\grman_couleurs.h
+1523207984 c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\grman_couleurs.h
 
-1522928007 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\coords.h
+1523192910 c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\coords.h
 	<cmath>
 
-1522928007 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\widget.h
+1523212045 c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\widget.h
 	"grman.h"
 	<iostream>
 	<string>
@@ -145,10 +147,10 @@
 	<algorithm>
 	<allegro.h>
 
-1522928007 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\coords.cpp
+1523192910 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\coords.cpp
 	"coords.h"
 
-1522928007 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\grman.cpp
+1523207984 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\grman.cpp
 	<cmath>
 	<unordered_map>
 	<unordered_set>
@@ -162,11 +164,68 @@
 	<loadpng.h>
 	<jpgalleg.h>
 
-1522928007 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\grman\widget.cpp
+1523207696 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\widget.cpp
 	"widget.h"
 
-1522933498 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20\graph_lib_exemple_graph\main.cpp
+1523196920 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\main.cpp
 	"grman/grman.h"
 	<iostream>
 	"graph.h"
+
+1523126179 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\coords.cpp
+	"coords.h"
+
+1523126179 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\coords.h
+	<cmath>
+
+1523126179 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\grman.cpp
+	<cmath>
+	<unordered_map>
+	<unordered_set>
+	<utility>
+	<string>
+	<iostream>
+	<regex>
+	"grman.h"
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+
+1523126179 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\grman.h
+	<allegro.h>
+	<string>
+	"grman_couleurs.h"
+	"coords.h"
+	"widget.h"
+
+1523126179 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\grman_couleurs.h
+
+1523126179 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\widget.h
+	"grman.h"
+	<iostream>
+	<string>
+	<vector>
+	<algorithm>
+	<allegro.h>
+
+1523126179 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\grman\widget.cpp
+	"widget.h"
+
+1523126179 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\main.cpp
+	"grman/grman.h"
+	<iostream>
+	"graph.h"
+
+1523135477 c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\graph.h
+	<vector>
+	<map>
+	<string>
+	<memory>
+	"grman/grman.h"
+
+1523136776 source:c:\users\sylvain\desktop\projet-theorie-graphe-develop-s20.2\graph_lib_exemple_graph\graph.cpp
+	"graph.h"
+	<fstream>
+	<iostream>
 
