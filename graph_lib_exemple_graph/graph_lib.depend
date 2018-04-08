@@ -113,16 +113,19 @@
 	<iostream>
 	"graph.h"
 
-1523216455 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.cpp
+1523226539 source:c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.cpp
 	"graph.h"
 	<fstream>
 	<iostream>
 
-1523210957 c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.h
+1523227592 c:\users\sylvain\desktop\graph_lib_exemple_graph\graph.h
 	<vector>
 	<map>
 	<string>
 	<memory>
+	<list>
+	<queue>
+	<stack>
 	"grman/grman.h"
 
 1523212027 c:\users\sylvain\desktop\graph_lib_exemple_graph\grman\grman.h

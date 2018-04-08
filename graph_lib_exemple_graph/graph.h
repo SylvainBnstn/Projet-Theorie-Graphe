@@ -73,7 +73,9 @@
 #include <map>
 #include <string>
 #include <memory>
-
+#include <list>
+#include <queue>
+#include <stack>
 #include "grman/grman.h"
 
 /*!
@@ -161,6 +163,8 @@ class Vertex
 
         double m_value;//! Donnee associee à l'arc
 
+        bool m_existe;
+        bool m_marqueur;
 
         bool m_to_delete;//! Indication de suppression
 
@@ -296,14 +300,21 @@ class GraphInterface
         grman::WidgetButton m_button_add_edge; //!bouton ajout edge
         grman::WidgetButton m_button_add_vertex; //!bouton ajout vertex
         grman::WidgetButton m_button_reset; //!bouton de reset
+        grman::WidgetButton m_button_k_connex;
+        grman::WidgetButton m_button_forte_connexite;
 
+
+        grman::WidgetText m_txt_k_connexe;
         grman::WidgetText m_txt_a_e; //! texte associe au bouton ajout edge
         grman::WidgetText m_txt_a_v; //! texte associe au bouton ajout vertex
         grman::WidgetText m_txt_reset; //! texte associe au bouton reset
+        grman::WidgetText m_txt_forte_connexite;
 
         grman::WidgetBox m_box_temp;//! boite de temporalite
         grman::WidgetCheckBox m_check_temp; //!check box lancant la simulation
         grman::WidgetText m_txt_temp; //! texte associe a la temporalite
+
+
 
     public :
 
@@ -323,6 +334,11 @@ class Graph
     */
     private :
 
+        //!Vecteur de vecteur pour contenir toutes les composantes fortement connexes du graphe
+        std::vector<std::vector<int>> m_forte_connexite;
+
+        //!Nombre de composantes fortement connexes
+        int m_nb_forte_connexite=0;
 
         std::map<int, Edge> m_edges;//! La liste des aretes
 
@@ -334,8 +350,36 @@ class Graph
 
         std::string m_name="";
 
-    public:
+        //!Ordre du graphe
+        int m_ordre;
 
+        //!Nombre d'arete du graphe
+        int m_arete;
+
+        //!Liste d'adjacence des sommets du graphe
+        std::list<int> *adj;
+
+        //!Méthode de remplissage de la pile pour les composantes fortement connexes
+        void remplissage(int v, bool visited[], std::stack<int> &Stack);
+
+        //!Méthode de DFS
+        void DFS(int v, bool visited[], std::vector<int> *conn);
+
+        //!Tour de boucle pour la k connexite
+        int m_tdb_max;
+        int m_tdb;
+
+    public:
+        void adjacence();
+
+        //!Méthode d'initialisation du graphe
+        void initGraph(int v);
+
+        //!Méthode pour trouver toutes les composantes fortement connexes du graphe
+        void ComposantesFortementConnexes();
+
+        //!Fonction qui retourne le transposé d'un graphe
+        Graph getTranspose();
 
         Graph (GraphInterface *interface=nullptr) :
             m_interface(interface)  {  }//! Les constructeurs
@@ -363,6 +407,9 @@ class Graph
         void save_graph(std::string name); //! methode de sauvegarde d'un graph
         void unload_graph(); //! methode de suppression memoire d'un graph
         void load_backup_graph(); //! methode de chargement du graph initiale
+        void k_connexe(std::vector<int>& intermediaire, std::vector<std::vector <int>>& combinaison);//! methode qui verifie la k connexite
+        bool graph_connexite(int idx);//! methode qui verifie que le graph reste connexe une fois les sommets supprimé
+        void initialisation_k_connexite();//!Lance la boucle k connexite
 };
 
 

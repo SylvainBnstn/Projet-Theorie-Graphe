@@ -181,6 +181,14 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_button_add_edge.add_child(m_txt_a_e);
     m_txt_a_e.set_message("A-E");
 
+    //!bouton k_connexité
+    m_button_global.add_child(m_button_k_connex);
+    m_button_k_connex.set_dim(31,31);
+    m_button_k_connex.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
+    m_button_k_connex.set_bg_color(FUCHSIA);
+    m_button_k_connex.add_child(m_txt_k_connexe);
+    m_txt_k_connexe.set_message("K-CO");
+
     //!bouton ajout vertex en bas a gauche de la boite
 
     m_button_global.add_child(m_button_add_vertex);
@@ -205,6 +213,14 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_main_box.set_dim(908,720);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
+
+    ///bouton forte connexite
+    m_tool_box.add_child(m_button_forte_connexite);
+    m_button_forte_connexite.set_dim(80,60);
+    m_button_forte_connexite.set_posy(30);
+    m_button_forte_connexite.set_bg_color(BLEUCLAIR);
+    m_button_forte_connexite.add_child(m_txt_forte_connexite);
+    m_txt_forte_connexite.set_message("FORTE CO");
 
     //!bouton temporalite
 
@@ -232,6 +248,11 @@ int GraphInterface::ajout_suppression()
         m_button_add_edge.set_value(false);
         return(1);
     }
+    if(m_button_k_connex.get_value()==true)
+    {
+        m_button_k_connex.set_value(false);
+        return(2);
+    }
     if(m_button_add_vertex.get_value() ==true)
     {
         m_button_add_vertex.set_value(false);
@@ -241,6 +262,11 @@ int GraphInterface::ajout_suppression()
     {
         m_button_reset.set_value(false);
         return(4);
+    }
+        if(m_button_forte_connexite.get_value()==true)
+    {
+        m_button_forte_connexite.set_value(false);
+        return(5);
     }
     return(0);
 }
@@ -292,6 +318,7 @@ void Graph::boucle()
     std::string name=m_name+".txt";
     load_graph(name);
 
+
     //! Vous gardez la main sur la "boucle de jeu"
     while ( !key[KEY_ESC] )
     {
@@ -312,9 +339,10 @@ void Graph::update()
         return;
     int button=m_interface->ajout_suppression();
     if(button==1)   user_add_edge();
-    if(button==2)   user_suppress_edge();
+    if(button==2)   initialisation_k_connexite();
     if(button==3)   user_add_vertex();
     if(button==4)   load_backup_graph();
+    if(button==5)   ComposantesFortementConnexes();
     for (auto &elt : m_vertices)
         {
             elt.second.pre_update();
@@ -555,5 +583,359 @@ void Graph::temporalite()
             }
     }
 
+
+}
+
+//!Méthode pour appliquer le DFS à partir du sommet v
+void Graph::DFS(int v, bool visited[], std::vector<int> *conn)
+{
+    //!On marque le sommet
+    visited[v] = true;
+    //!On rajoute le sommet dans le vecteur de connexité
+    conn->push_back(v);
+
+    //!Iterateur
+    std::list<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+        //!Si le sommet n'est pas visité
+        if (!visited[*i])
+        {
+            //!Récursité
+            DFS(*i, visited, conn);
+        }
+    }
+}
+
+//!Méthode pour initialiser le graphe
+void Graph::initGraph(int v)
+{
+    m_ordre = v;
+    adj = new std::list<int>[v];
+}
+
+//!Méthode pour trouver le transposé d'un graphe
+Graph Graph::getTranspose()
+{
+    //!Déclaration du graphe
+    Graph gr;
+    //!On initialise les parametres du graphe
+    gr.initGraph(m_arete);
+
+    for (int v = 0; v < m_arete; v++)
+    {
+        std::list<int>::iterator i;
+        for(i = adj[v].begin(); i != adj[v].end(); ++i)
+        {
+            //!On ajoute le sommet v dans la liste d'adjacence du sommet *i
+            gr.adj[*i].push_back(v);
+        }
+    }
+    //!On retourne le graphe obtenu
+    return gr;
+}
+
+//!Méthode pour remplir notre pile
+void Graph::remplissage(int v, bool visited[], std::stack<int> &Stack)
+{
+    //!On marque le sommet à 'visité'
+    visited[v] = true;
+
+    //! Recur for all the vertices adjacent to this vertex
+    std::list<int>::iterator i;
+    //!On parcourt les adjacents du sommet v
+    for(i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+        //!Si le sommet n'est pas visité
+        if(!visited[*i])
+        {
+            //!Récursivité
+            remplissage(*i, visited, Stack);
+        }
+    }
+    Stack.push(v);
+}
+
+
+//!Méthode pour trouver toutes les composantes fortement connexes du graphe
+void Graph::ComposantesFortementConnexes()
+{
+    //!On récupére l'ordre du graphe
+    m_ordre = m_vertices.size();
+
+    //!On récupére le nombre d'arete du graphe
+    m_arete = m_edges.size();
+
+    //!On alloue la liste d'adjacence
+    adj = new std::list<int>[m_arete];
+
+    //!On remplit la liste d'adjacence grace au vecteur d'arete
+    std::map<int, Edge>::iterator it;
+    for(it = m_edges.begin() ; it != m_edges.end() ; ++it)
+    {
+        adj[it->second.m_from].push_back(it->second.m_to);
+    }
+
+    //!Déclaration des variables
+    std::stack<int> Stack;
+    std::vector<int> connexite;
+
+    //!On marque tout les sommets à non visités
+    bool *visited = new bool[m_ordre];
+    for(int i = 0; i < m_ordre; i++)
+    {
+        visited[i] = false;
+    }
+
+    //!On remplit la pile
+    for(int i = 0; i < m_ordre; i++)
+    {
+        //!Si le sommet n'est pas visité
+        if(visited[i] == false)
+        {
+            remplissage(i, visited, Stack);
+        }
+    }
+
+    //!Création d'un graphe transposé
+    Graph gr = getTranspose();
+
+    //!On réinitialise les sommets à non visités
+    for(int i = 0; i < m_ordre; i++)
+    {
+        visited[i] = false;
+    }
+
+    //!On traite la pile tant qu'elle n'est pas vide
+    while (Stack.empty() == false)
+    {
+        //!On récupére d'apres la pile
+        int v = Stack.top();
+        //!On supprime l'élément que l'on vient de prendre de la pile
+        Stack.pop();
+
+        //!Si le sommet n'est pas visité
+        if (visited[v] == false)
+        {
+            std::vector<int> connexite;
+            //!Parcours en DFS
+            gr.DFS(v, visited, &connexite);
+            std::cout << std::endl;
+            //!Ajout d'une composante fortement connexe
+            m_nb_forte_connexite++;
+            //!On rajoute le vecteur de la composante fortement connexe dans notre vecteur de vecteur
+            m_forte_connexite.push_back(connexite);
+            //!On nettoie le vecteur
+            connexite.clear();
+        }
+    }
+
+    //!Affichage des composantes fortement connexes
+    std::cout << std::endl;
+    std::vector<int>::iterator p;
+    for(int unsigned i=0;i<m_forte_connexite.size();i++)
+    {
+        std::cout << "Composante Fortement connexe " << i+1 << " : ";
+        for(p= m_forte_connexite[i].begin(); p!= m_forte_connexite[i].end(); p++)
+        {
+            std::cout << *p << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+//!Lance la boucle k connexite
+void Graph::initialisation_k_connexite()
+{
+    bool necessite=true;
+    int nb_sommets_adj=0;
+    std::vector<std::vector <int>> combinaisons;
+    std::vector<int> intermediaire;
+    for(auto& element:m_vertices)
+    {
+
+        nb_sommets_adj=element.second.m_out.size()+element.second.m_in.size();
+        if(nb_sommets_adj==0)
+        {
+            necessite=false;
+        }
+    }
+    if(necessite==false)
+    {
+        std::cout<<"le graphe est deja non connexe"<<std::endl;
+    }
+    else if(necessite==true)
+    {
+        for(auto &element:m_vertices)
+        {
+            element.second.m_existe=true;
+        }
+        m_tdb=0;
+        m_tdb_max=6666;
+        k_connexe(intermediaire,combinaisons);
+        int poids_minimum=1000000;
+    std::vector<std::vector <int>> combinaisons_min;
+    std::vector<std::vector <int>> combinaisons_min1;
+    std::vector<std::vector <int>> utilises;
+    int indice=0;
+    bool bon;
+    for(int i=0; i<combinaisons.size(); i++)
+    {
+        if(combinaisons[i].size()<poids_minimum)
+        {
+            poids_minimum=combinaisons[i].size();
+        }
+    }
+    for(int i=0; i<combinaisons.size();i++)
+    {
+        if(combinaisons[i].size()==poids_minimum)
+        {
+            combinaisons_min.push_back(combinaisons[i]);
+        }
+    }
+    for(int i=0;i<combinaisons_min.size();i++)
+    {
+        intermediaire=combinaisons_min[i];
+        indice=0;
+        bon=true;
+        for(int j=0;j<utilises.size();j++)
+        {
+            for(int k=0;k<utilises[i].size();i++)
+            {
+                for(int l=0;l<utilises.size();l++)
+                {
+                    if(intermediaire[l]==utilises[j][k])
+                    {
+                        indice++;
+                    }
+                    if(indice==poids_minimum)
+                    {
+                        bon=false;
+                    }
+                }
+            }
+        }
+        if(bon==true)
+        {
+            combinaisons_min1.push_back(intermediaire);
+            utilises.push_back(intermediaire);
+        }
+    }
+    std::cout<<"Le graphe devient non connexe en supprimant les sommets suivants"<<std::endl;
+    for(int i=0;i<combinaisons_min1.size();i++)
+    {
+        if(combinaisons_min1.size()!=0)
+        {
+            std::cout<<"- ";
+            for(int j=0;j<combinaisons_min1[i].size();j++)
+            {
+                std::cout<<combinaisons_min1[i][j]<<" ";
+            }
+            std::cout<<std::endl;
+        }
+
+    }
+
+    }
+}
+
+//! methode qui verifie la k connexite
+void Graph::k_connexe(std::vector<int>& intermediaire, std::vector<std::vector <int>>& combinaisons)
+{
+    bool bon;
+    for(auto & element:m_vertices)
+    {
+        if(element.second.m_existe)
+        {
+            element.second.m_existe=false;
+            if(graph_connexite(element.first)==true)
+            {
+                intermediaire.push_back(element.first);
+                m_tdb++;
+                if(m_tdb<m_tdb_max)
+                {
+                    k_connexe(intermediaire,combinaisons);
+                }
+                intermediaire.pop_back();
+            }
+            else if(graph_connexite(element.first)==false)
+            {
+                m_tdb++;
+                bon=true;
+                for(int i=0; i<combinaisons.size(); i++)
+                {
+                    if(combinaisons[i]==intermediaire)
+                    {
+                        bon=false;
+                    }
+                }
+                if(bon==true)
+                    combinaisons.push_back(intermediaire);
+                if(m_tdb<m_tdb_max)
+                {
+                    m_tdb_max=m_tdb;
+                }
+            }
+            m_tdb--;
+            element.second.m_existe=true;
+        }
+    }
+}
+
+//! methode qui verifie que le graph reste connexe une fois les sommets supprimé
+bool Graph::graph_connexite(int idx)
+{
+
+    int intermediaire;
+    int indice=0;
+    int indice1=0;
+    std::queue<int> file_bfs;
+    for(auto & element:m_vertices)
+    {
+        element.second.m_marqueur=false;
+    }
+    m_vertices[idx].m_marqueur=true;
+    file_bfs.push(idx);
+    while(file_bfs.size()!=0)
+    {
+        intermediaire=file_bfs.front();
+        file_bfs.pop();
+        for(int i=0; i<m_vertices[intermediaire].m_in.size(); i++)
+        {
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_in[i]].m_from);
+                m_vertices[m_edges[m_vertices[intermediaire].m_in[i]].m_from].m_marqueur=true;
+            }
+
+        }
+        for(int i=0; i<m_vertices[intermediaire].m_out.size(); i++)
+        {
+            if(m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_existe&&!m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur)
+            {
+                file_bfs.push(m_edges[m_vertices[intermediaire].m_out[i]].m_to);
+                m_vertices[m_edges[m_vertices[intermediaire].m_out[i]].m_to].m_marqueur=true;
+            }
+        }
+    }
+    for(auto& element:m_vertices)
+    {
+        if(element.second.m_existe)
+        {
+            indice++;
+        }
+        if(element.second.m_marqueur)
+        {
+            indice1++;
+        }
+    }
+    if(indice>indice1)
+    {
+        return false;
+    }
+    else if(indice==indice1)
+    {
+        return true;
+    }
 
 }
